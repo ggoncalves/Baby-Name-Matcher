@@ -236,7 +236,7 @@ class FilePathValidatorTest {
     @Test
     @DisplayName("Should correctly use getters and setters")
     void shouldCorrectlyUseGettersAndSetters() {
-      FilePathValidator.ValidationResult result = new FilePathValidator.ValidationResult();
+      FilePathValidator.ValidationResult result = new FilePathValidator.ValidationResult.ValidationResultBuilder().build();
 
       result.setValid(true);
       result.setExists(true);
