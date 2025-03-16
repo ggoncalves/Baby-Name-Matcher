@@ -9,7 +9,7 @@ public class ExceptionHandler {
   public static final String PERMISSION_ERROR_MESSAGE = "Erro de permissão: {}";
   public static final String UNEXPECTED_ERROR_MESSAGE = "ERRO: Ocorreu um erro inesperado - ";
 
-  public void handle(Exception e) {
+  public void handle(Throwable e) {
     if (e instanceof InvalidFileException) {
       log.error(INVALID_FILE_ERROR, e.getMessage());
 //      System.err.println(INVALID_FILE_ERROR + e.getMessage());

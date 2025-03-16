@@ -1,15 +1,13 @@
 package com.ggoncalves.babynamematcher.exception;
 
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-@Getter
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class FilePermissionException extends RuntimeException {
 
   public FilePermissionException(String message) {
     super(message);
-  }
-
-  public FilePermissionException(String message, Throwable cause) {
-    super(message, cause);
   }
 }

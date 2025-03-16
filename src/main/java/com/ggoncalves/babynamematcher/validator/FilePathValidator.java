@@ -1,8 +1,5 @@
 package com.ggoncalves.babynamematcher.validator;
 
-import lombok.Builder;
-import lombok.Data;
-
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,7 +7,7 @@ import java.nio.file.Paths;
 
 public class FilePathValidator {
 
-  public static boolean isValidExistingFilePath(String filePath) {
+  public boolean isValidExistingFilePath(String filePath) {
     if (isEmptyOrNullFilePath(filePath)) return false;
 
     try {
@@ -22,7 +19,7 @@ public class FilePathValidator {
     }
   }
 
-  public static boolean isValidPathSyntax(String filePath) {
+  public boolean isValidPathSyntax(String filePath) {
     if (isEmptyOrNullFilePath(filePath)) return false;
 
     try {
@@ -34,26 +31,29 @@ public class FilePathValidator {
     }
   }
 
-  public static ValidationResult validateFilePath(String filePath) {
+  public ValidationResult validateFilePath(String filePath) {
+
+    ValidationResult.ValidationResultBuilder validationResultBuilder = ValidationResult
+        .builder().filePath(filePath);
 
     if (filePath == null || filePath.trim().isEmpty()) {
-      return ValidationResult.builder()
+      return validationResultBuilder
           .valid(false)
           .errorMessage("Path is null or empty")
           .build();
     }
 
-    ValidationResult.ValidationResultBuilder validationResultBuilder = ValidationResult.builder();
-
     try {
       Path path = Paths.get(filePath);
       File file = path.toFile();
 
+      boolean isFileExists = Files.exists(path);
+
       validationResultBuilder
           .valid(true)
-          .exists(Files.exists(path));
+          .exists(isFileExists);
 
-      if (validationResultBuilder.exists) {
+      if (isFileExists) {
         validationResultBuilder
             .isDirectory(Files.isDirectory(path))
             .readable(file.canRead())
@@ -71,19 +71,7 @@ public class FilePathValidator {
     return validationResultBuilder.build();
   }
 
-  private static boolean isEmptyOrNullFilePath(String filePath) {
+  private boolean isEmptyOrNullFilePath(String filePath) {
     return filePath == null || filePath.trim().isEmpty();
-  }
-
-  @Data
-  @Builder
-  public static class ValidationResult {
-    private boolean valid;
-    private boolean exists;
-    private boolean isDirectory;
-    private boolean readable;
-    private boolean writable;
-    private boolean executable;
-    private String errorMessage;
   }
 }

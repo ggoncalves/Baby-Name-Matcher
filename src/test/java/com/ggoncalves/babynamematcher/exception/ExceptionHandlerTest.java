@@ -142,20 +142,20 @@ class ExceptionHandlerTest {
   }
 }
 
-/**
- * Mock class for testing - simulates the InvalidFileException
- */
-class InvalidFileException extends RuntimeException {
-  public InvalidFileException(String message) {
-    super(message);
-  }
-}
-
-/**
- * Mock class for testing - simulates the FilePermissionException
- */
-class FilePermissionException extends RuntimeException {
-  public FilePermissionException(String message) {
-    super(message);
-  }
-}
+///**
+// * Mock class for testing - simulates the InvalidFileException
+// */
+//class InvalidFileException extends RuntimeException {
+//  public InvalidFileException(String message) {
+//    super(message);
+//  }
+//}
+//
+///**
+// * Mock class for testing - simulates the FilePermissionException
+// */
+//class FilePermissionException extends RuntimeException {
+//  public FilePermissionException(String message) {
+//    super(message);
+//  }
+//}

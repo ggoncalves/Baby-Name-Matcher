@@ -8,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.InjectMocks;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -23,6 +24,9 @@ import static org.mockito.Mockito.mockStatic;
 
 @ExtendWith(MockitoExtension.class)
 class FilePathValidatorTest {
+
+  @InjectMocks
+  private FilePathValidator filePathValidator;
 
   @TempDir
   private Path tempDir;
@@ -58,32 +62,32 @@ class FilePathValidatorTest {
     @Test
     @DisplayName("Should return false for null path")
     void shouldReturnFalseForNullPath() {
-      assertThat(FilePathValidator.isValidExistingFilePath(null)).isFalse();
+      assertThat(filePathValidator.isValidExistingFilePath(null)).isFalse();
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"", "   "})
     @DisplayName("Should return false for empty path")
     void shouldReturnFalseForEmptyPath(String path) {
-      assertThat(FilePathValidator.isValidExistingFilePath(path)).isFalse();
+      assertThat(filePathValidator.isValidExistingFilePath(path)).isFalse();
     }
 
     @Test
     @DisplayName("Should return true for existing file")
     void shouldReturnTrueForExistingFile() {
-      assertThat(FilePathValidator.isValidExistingFilePath(existingFile.toString())).isTrue();
+      assertThat(filePathValidator.isValidExistingFilePath(existingFile.toString())).isTrue();
     }
 
     @Test
     @DisplayName("Should return true for existing directory")
     void shouldReturnTrueForExistingDirectory() {
-      assertThat(FilePathValidator.isValidExistingFilePath(existingDirectory.toString())).isTrue();
+      assertThat(filePathValidator.isValidExistingFilePath(existingDirectory.toString())).isTrue();
     }
 
     @Test
     @DisplayName("Should return false for non-existent file")
     void shouldReturnFalseForNonExistentFile() {
-      assertThat(FilePathValidator.isValidExistingFilePath(nonExistentFile.toString())).isFalse();
+      assertThat(filePathValidator.isValidExistingFilePath(nonExistentFile.toString())).isFalse();
     }
 
     @Test
@@ -91,11 +95,11 @@ class FilePathValidatorTest {
     void shouldReturnFalseForInvalidPathSyntax() {
       // On Windows, colons are invalid in file names except for drive letter
       // On Unix-like systems, null character is invalid
-      String invalidPath = System.getProperty("os.name").toLowerCase().contains("win")
-          ? "C:\\invalid\\path\\with:illegal:character"
-          : "/invalid/path/with/\0nullcharacter";
+      String invalidPath = System.getProperty("os.name")
+          .toLowerCase()
+          .contains("win") ? "C:\\invalid\\path\\with:illegal:character" : "/invalid/path/with/\0nullcharacter";
 
-      assertThat(FilePathValidator.isValidExistingFilePath(invalidPath)).isFalse();
+      assertThat(filePathValidator.isValidExistingFilePath(invalidPath)).isFalse();
     }
 
     @Test
@@ -105,7 +109,7 @@ class FilePathValidatorTest {
         mockedPaths.when(() -> Paths.get(any(String.class)))
             .thenThrow(new RuntimeException("Mocked exception"));
 
-        assertThat(FilePathValidator.isValidExistingFilePath("/some/path")).isFalse();
+        assertThat(filePathValidator.isValidExistingFilePath("/some/path")).isFalse();
       }
     }
   }
@@ -117,21 +121,21 @@ class FilePathValidatorTest {
     @Test
     @DisplayName("Should return false for null path")
     void shouldReturnFalseForNullPath() {
-      assertThat(FilePathValidator.isValidPathSyntax(null)).isFalse();
+      assertThat(filePathValidator.isValidPathSyntax(null)).isFalse();
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"", "   "})
     @DisplayName("Should return false for empty paths")
     void shouldReturnFalseForEmptyPaths(String path) {
-      assertThat(FilePathValidator.isValidPathSyntax(path)).isFalse();
+      assertThat(filePathValidator.isValidPathSyntax(path)).isFalse();
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"/valid/path", "C:\\valid\\path", "./relative/path", "../parent/path"})
     @DisplayName("Should return true for valid path syntax")
     void shouldReturnTrueForValidPathSyntax(String path) {
-      assertThat(FilePathValidator.isValidPathSyntax(path)).isTrue();
+      assertThat(filePathValidator.isValidPathSyntax(path)).isTrue();
     }
 
     @Test
@@ -141,7 +145,7 @@ class FilePathValidatorTest {
         mockedPaths.when(() -> Paths.get(any(String.class)))
             .thenThrow(new RuntimeException("Mocked exception"));
 
-        assertThat(FilePathValidator.isValidPathSyntax("/some/path")).isFalse();
+        assertThat(filePathValidator.isValidPathSyntax("/some/path")).isFalse();
       }
     }
   }
@@ -153,7 +157,7 @@ class FilePathValidatorTest {
     @Test
     @DisplayName("Should return invalid result for null path")
     void shouldReturnInvalidResultForNullPath() {
-      FilePathValidator.ValidationResult result = FilePathValidator.validateFilePath(null);
+      ValidationResult result = filePathValidator.validateFilePath(null);
 
       assertThat(result.isValid()).isFalse();
       assertThat(result.getErrorMessage()).isNotEmpty();
@@ -163,7 +167,7 @@ class FilePathValidatorTest {
     @ValueSource(strings = {"", "   "})
     @DisplayName("Should return invalid result for empty paths")
     void shouldReturnInvalidResultForEmptyPaths(String path) {
-      FilePathValidator.ValidationResult result = FilePathValidator.validateFilePath(path);
+      ValidationResult result = filePathValidator.validateFilePath(path);
 
       assertThat(result.isValid()).isFalse();
       assertThat(result.getErrorMessage()).isNotEmpty();
@@ -172,7 +176,7 @@ class FilePathValidatorTest {
     @Test
     @DisplayName("Should return valid result with correct attributes for existing file")
     void shouldReturnValidResultWithCorrectAttributesForExistingFile() {
-      FilePathValidator.ValidationResult result = FilePathValidator.validateFilePath(existingFile.toString());
+      ValidationResult result = filePathValidator.validateFilePath(existingFile.toString());
 
       assertThat(result.isValid()).isTrue();
       assertThat(result.isExists()).isTrue();
@@ -185,7 +189,7 @@ class FilePathValidatorTest {
     @Test
     @DisplayName("Should return valid result with correct attributes for existing directory")
     void shouldReturnValidResultWithCorrectAttributesForExistingDirectory() {
-      FilePathValidator.ValidationResult result = FilePathValidator.validateFilePath(existingDirectory.toString());
+      ValidationResult result = filePathValidator.validateFilePath(existingDirectory.toString());
 
       assertThat(result.isValid()).isTrue();
       assertThat(result.isExists()).isTrue();
@@ -196,7 +200,7 @@ class FilePathValidatorTest {
     @Test
     @DisplayName("Should return valid result with exists=false for non-existent file")
     void shouldReturnValidResultWithExistsFalseForNonExistentFile() {
-      FilePathValidator.ValidationResult result = FilePathValidator.validateFilePath(nonExistentFile.toString());
+      ValidationResult result = filePathValidator.validateFilePath(nonExistentFile.toString());
 
       assertThat(result.isValid()).isTrue();
       assertThat(result.isExists()).isFalse();
@@ -206,7 +210,7 @@ class FilePathValidatorTest {
     @Test
     @DisplayName("Should return correct writable attribute for read-only file")
     void shouldReturnCorrectWritableAttributeForReadOnlyFile() {
-      FilePathValidator.ValidationResult result = FilePathValidator.validateFilePath(readOnlyFile.toString());
+      ValidationResult result = filePathValidator.validateFilePath(readOnlyFile.toString());
 
       assertThat(result.isValid()).isTrue();
       assertThat(result.isExists()).isTrue();
@@ -221,7 +225,7 @@ class FilePathValidatorTest {
         mockedPaths.when(() -> Paths.get(any(String.class)))
             .thenThrow(new RuntimeException("Mocked exception"));
 
-        FilePathValidator.ValidationResult result = FilePathValidator.validateFilePath("/some/path");
+        ValidationResult result = filePathValidator.validateFilePath("/some/path");
 
         assertThat(result.isValid()).isFalse();
         assertThat(result.getErrorMessage()).contains("Mocked exception");
@@ -236,7 +240,7 @@ class FilePathValidatorTest {
     @Test
     @DisplayName("Should correctly use getters and setters")
     void shouldCorrectlyUseGettersAndSetters() {
-      FilePathValidator.ValidationResult result = new FilePathValidator.ValidationResult.ValidationResultBuilder().build();
+      ValidationResult result = new ValidationResult.ValidationResultBuilder().build();
 
       result.setValid(true);
       result.setExists(true);
