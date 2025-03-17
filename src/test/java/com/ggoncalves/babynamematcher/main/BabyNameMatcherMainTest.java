@@ -3,6 +3,7 @@ package com.ggoncalves.babynamematcher.main;
 import com.ggoncalves.babynamematcher.exception.ExceptionHandler;
 import com.ggoncalves.babynamematcher.exception.FilePermissionException;
 import com.ggoncalves.babynamematcher.exception.InvalidFileException;
+import com.ggoncalves.babynamematcher.exception.NotEnoughNameListsException;
 import com.ggoncalves.babynamematcher.validator.FilePathValidator;
 import com.ggoncalves.babynamematcher.validator.ValidationResult;
 import org.junit.jupiter.api.DisplayName;
@@ -28,30 +29,31 @@ public class BabyNameMatcherMainTest {
   private BabyNameMatcherMain babyNameMatcherMain;
 
   @Test
+  @DisplayName("Should show error asking for at least two lists")
+  void shouldShowErrorAskForAtLeastTwoLists() {
+    // Arrange
+    String[] paths = {"valid_file1.txt"};
+
+    babyNameMatcherMain = new BabyNameMatcherMain(paths, exceptionHandler, filePathValidator);
+
+    // Act & Assert
+    babyNameMatcherMain.run();
+
+    // Verify each path was validated
+    verifyNoInteractions(filePathValidator);
+    verify(exceptionHandler).handle(any(NotEnoughNameListsException.class));
+    verify(exceptionHandler).handle(argThat(e -> e.getMessage()
+        .contains("At least two name lists are required for matching")));
+  }
+
+  @Test
   @DisplayName("Should process valid file paths without throwing exceptions")
   void shouldProcessValidFilePaths() {
     // Arrange
     String[] paths = {"valid_file1.txt", "valid_file2.txt"};
 
-    ValidationResult validResult1 = ValidationResult.builder()
-        .filePath("valid_file1.txt")
-        .valid(true)
-        .exists(true)
-        .isDirectory(false)
-        .readable(true)
-        .writable(true)
-        .executable(false)
-        .build();
-
-    ValidationResult validResult2 = ValidationResult.builder()
-        .filePath("valid_file2.txt")
-        .valid(true)
-        .exists(true)
-        .isDirectory(false)
-        .readable(true)
-        .writable(true)
-        .executable(false)
-        .build();
+    ValidationResult validResult1 = createValidResultForFile("valid_file1.txt");
+    ValidationResult validResult2 = createValidResultForFile("valid_file2.txt");
 
     when(filePathValidator.validateFilePath("valid_file1.txt")).thenReturn(validResult1);
     when(filePathValidator.validateFilePath("valid_file2.txt")).thenReturn(validResult2);
@@ -68,11 +70,23 @@ public class BabyNameMatcherMainTest {
     verifyNoInteractions(exceptionHandler);
   }
 
+  private static ValidationResult createValidResultForFile(String filePath) {
+    return ValidationResult.builder()
+        .filePath(filePath)
+        .valid(true)
+        .exists(true)
+        .isDirectory(false)
+        .readable(true)
+        .writable(true)
+        .executable(false)
+        .build();
+  }
+
   @Test
   @DisplayName("Should throw InvalidFileException when file path is invalid")
   void shouldThrowInvalidFileExceptionWhenFilePathIsInvalid() {
     // Arrange
-    String[] paths = {"invalid_file.txt"};
+    String[] paths = {"invalid_file.txt", "valid_file.txt"};
 
     ValidationResult invalidResult = ValidationResult.builder()
         .filePath("invalid_file.txt")
@@ -102,7 +116,7 @@ public class BabyNameMatcherMainTest {
   @DisplayName("Should throw InvalidFileException when file is a directory")
   void shouldThrowInvalidFileExceptionWhenFileIsDirectory() {
     // Arrange
-    String[] paths = {"directory_path"};
+    String[] paths = {"directory_path", "valid_file.txt"};
 
     ValidationResult directoryResult = ValidationResult.builder()
         .filePath("directory_path")
@@ -132,7 +146,7 @@ public class BabyNameMatcherMainTest {
   @DisplayName("Should throw FilePermissionException when file is unreadable")
   void shouldThrowFilePermissionExceptionWhenFileIsUnreadable() {
     // Arrange
-    String[] paths = {"unreadable_file.txt"};
+    String[] paths = {"unreadable_file.txt", "valid_file.txt"};
 
     ValidationResult unreadableResult = ValidationResult.builder()
         .filePath("unreadable_file.txt")

@@ -7,6 +7,7 @@ import com.ggoncalves.babynamematcher.di.DaggerAppComponent;
 import com.ggoncalves.babynamematcher.exception.ExceptionHandler;
 import com.ggoncalves.babynamematcher.exception.FilePermissionException;
 import com.ggoncalves.babynamematcher.exception.InvalidFileException;
+import com.ggoncalves.babynamematcher.exception.NotEnoughNameListsException;
 import com.ggoncalves.babynamematcher.validator.FilePathValidator;
 import com.ggoncalves.babynamematcher.validator.ValidationResult;
 import lombok.Getter;
@@ -33,6 +34,9 @@ public class BabyNameMatcherMain {
 
   public void run() {
     try {
+      if (paths.length < 2) {
+        throw new NotEnoughNameListsException();
+      }
       validatePaths(paths);
       runApplication(paths);
     }
