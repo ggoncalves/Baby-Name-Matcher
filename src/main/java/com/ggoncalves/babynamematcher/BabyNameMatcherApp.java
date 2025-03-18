@@ -1,22 +1,32 @@
 package com.ggoncalves.babynamematcher;
 
+import com.google.common.annotations.VisibleForTesting;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class BabyNameMatcherApp {
 
-  private final String[] args;
+  public void run(String[] args) {
+    List<List<String>> filesContent = getFilesContent(args);
 
-  public void run() {
-    printFilenames();
+    // TODO implement me
   }
 
-  private void printFilenames() {
-    for (String arg : args) {
-      File file = new File(arg);
-      System.out.println(file.getAbsolutePath());
+  @VisibleForTesting
+  @SneakyThrows
+  List<List<String>> getFilesContent(String[] args) {
+    List<List<String>> filesContent = new ArrayList<>(args.length);
+    for (String filePath : args) {
+      Path path = Paths.get(filePath);
+      filesContent.add(Files.readAllLines(path));
     }
+    return filesContent;
   }
 }

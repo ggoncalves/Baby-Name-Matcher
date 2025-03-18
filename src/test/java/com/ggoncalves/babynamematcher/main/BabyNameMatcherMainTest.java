@@ -1,11 +1,13 @@
 package com.ggoncalves.babynamematcher.main;
 
+import com.ggoncalves.babynamematcher.BabyNameMatcherApp;
 import com.ggoncalves.babynamematcher.exception.ExceptionHandler;
 import com.ggoncalves.babynamematcher.exception.FilePermissionException;
 import com.ggoncalves.babynamematcher.exception.InvalidFileException;
 import com.ggoncalves.babynamematcher.exception.NotEnoughNameListsException;
 import com.ggoncalves.babynamematcher.validator.FilePathValidator;
 import com.ggoncalves.babynamematcher.validator.ValidationResult;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +16,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.argThat;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class BabyNameMatcherMainTest {
@@ -25,6 +33,9 @@ public class BabyNameMatcherMainTest {
   @Mock
   private ExceptionHandler exceptionHandler;
 
+  @Mock
+  private BabyNameMatcherApp babyNameMatcherApp;
+
   @InjectMocks
   private BabyNameMatcherMain babyNameMatcherMain;
 
@@ -34,7 +45,7 @@ public class BabyNameMatcherMainTest {
     // Arrange
     String[] paths = {"valid_file1.txt"};
 
-    babyNameMatcherMain = new BabyNameMatcherMain(paths, exceptionHandler, filePathValidator);
+    babyNameMatcherMain = createBabyNameMatcherMain(paths);
 
     // Act & Assert
     babyNameMatcherMain.run();
@@ -44,6 +55,11 @@ public class BabyNameMatcherMainTest {
     verify(exceptionHandler).handle(any(NotEnoughNameListsException.class));
     verify(exceptionHandler).handle(argThat(e -> e.getMessage()
         .contains("At least two name lists are required for matching")));
+  }
+
+  @NotNull
+  private BabyNameMatcherMain createBabyNameMatcherMain(String[] paths) {
+    return new BabyNameMatcherMain(paths, exceptionHandler, filePathValidator, babyNameMatcherApp);
   }
 
   @Test
@@ -58,7 +74,7 @@ public class BabyNameMatcherMainTest {
     when(filePathValidator.validateFilePath("valid_file1.txt")).thenReturn(validResult1);
     when(filePathValidator.validateFilePath("valid_file2.txt")).thenReturn(validResult2);
 
-    babyNameMatcherMain = new BabyNameMatcherMain(paths, exceptionHandler, filePathValidator);
+    babyNameMatcherMain = createBabyNameMatcherMain(paths);
 
     // Act & Assert
     assertThatCode(() -> babyNameMatcherMain.run()).doesNotThrowAnyException();
@@ -101,7 +117,7 @@ public class BabyNameMatcherMainTest {
 
     when(filePathValidator.validateFilePath("invalid_file.txt")).thenReturn(invalidResult);
 
-    babyNameMatcherMain = new BabyNameMatcherMain(paths, exceptionHandler, filePathValidator);
+    babyNameMatcherMain = createBabyNameMatcherMain(paths);
 
     // Act & Assert
     babyNameMatcherMain.run();
@@ -131,7 +147,7 @@ public class BabyNameMatcherMainTest {
 
     when(filePathValidator.validateFilePath("directory_path")).thenReturn(directoryResult);
 
-    babyNameMatcherMain = new BabyNameMatcherMain(paths, exceptionHandler, filePathValidator);
+    babyNameMatcherMain = createBabyNameMatcherMain(paths);
 
     // Act & Assert
     babyNameMatcherMain.run();
@@ -161,7 +177,7 @@ public class BabyNameMatcherMainTest {
 
     when(filePathValidator.validateFilePath("unreadable_file.txt")).thenReturn(unreadableResult);
 
-    babyNameMatcherMain = new BabyNameMatcherMain(paths, exceptionHandler, filePathValidator);
+    babyNameMatcherMain = createBabyNameMatcherMain(paths);
 
     // Act & Assert
     babyNameMatcherMain.run();
@@ -203,7 +219,7 @@ public class BabyNameMatcherMainTest {
     when(filePathValidator.validateFilePath("valid_file.txt")).thenReturn(validResult);
     when(filePathValidator.validateFilePath("directory_path")).thenReturn(directoryResult);
 
-    babyNameMatcherMain = new BabyNameMatcherMain(paths, exceptionHandler, filePathValidator);
+    babyNameMatcherMain = createBabyNameMatcherMain(paths);
 
     // Act & Assert
     babyNameMatcherMain.run();

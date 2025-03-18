@@ -22,21 +22,21 @@ public class BabyNameMatcherMain {
   private final String[] paths;
   private final ExceptionHandler exceptionHandler;
   private final FilePathValidator filePathValidator;
+  private final BabyNameMatcherApp babyNameMatcherApp;
 
   @Inject
   public BabyNameMatcherMain(String[] paths,
                              ExceptionHandler exceptionHandler,
-                             FilePathValidator filePathValidator) {
+                             FilePathValidator filePathValidator,
+                             BabyNameMatcherApp babyNameMatcherApp) {
     this.paths = paths;
     this.exceptionHandler = exceptionHandler;
     this.filePathValidator = filePathValidator;
+    this.babyNameMatcherApp = babyNameMatcherApp;
   }
 
   public void run() {
     try {
-      if (paths.length < 2) {
-        throw new NotEnoughNameListsException();
-      }
       validatePaths(paths);
       runApplication(paths);
     }
@@ -46,10 +46,13 @@ public class BabyNameMatcherMain {
   }
 
   private void runApplication(String[] paths) {
-    new BabyNameMatcherApp(paths).run();
+    babyNameMatcherApp.run(paths);
   }
 
   private void validatePaths(String... paths) {
+    if (paths.length < 2) {
+      throw new NotEnoughNameListsException();
+    }
     for (String path : paths) {
       ValidationResult result = filePathValidator.validateFilePath(path);
       validateResult(result);

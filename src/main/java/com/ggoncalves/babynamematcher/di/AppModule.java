@@ -1,5 +1,6 @@
 package com.ggoncalves.babynamematcher.di;
 
+import com.ggoncalves.babynamematcher.BabyNameMatcherApp;
 import com.ggoncalves.babynamematcher.exception.ExceptionHandler;
 import com.ggoncalves.babynamematcher.validator.FilePathValidator;
 import dagger.Module;
@@ -31,5 +32,11 @@ public class AppModule {
   @Singleton
   public FilePathValidator provideFilePathValidator() {
     return new FilePathValidator();
+  }
+
+  @Provides
+  @Singleton
+  public BabyNameMatcherApp provideBabyNameMatcherApp() {
+    return new BabyNameMatcherApp();
   }
 }
