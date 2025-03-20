@@ -1,5 +1,6 @@
 package com.ggoncalves.babynamematcher.core;
 
+import lombok.Builder;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
@@ -8,9 +9,11 @@ import java.util.Objects;
 import java.util.Set;
 
 @Data
+@Builder
 public class NameOption implements Comparable<NameOption>{
   private String name;
   private boolean hasMatch;
+  @Builder.Default
   private Set<Integer> sourceListIndices = new HashSet<>();
 
   @Override

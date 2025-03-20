@@ -2,10 +2,13 @@ package com.ggoncalves.babynamematcher.core;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,14 +17,20 @@ import java.util.Optional;
 @RequiredArgsConstructor(onConstructor_ = @Inject)
 public class NameMatchProcessor {
 
+  // External dependencies
   private final NameListFileReader nameListFileReader;
+
   private Map<String, NameOption> namesMap;
-  private boolean isCrossCompoundNameMatch;
+  private boolean bidirectionalCompoundMatching;
 
   public List<NameOption> processAndGetMatchingNames(String[] args) {
     List<List<String>> namesFromFiles = nameListFileReader.readNameListFromFiles(args);
     processAllNames(namesFromFiles);
-    return getNamesMap().values().stream().sorted().toList();
+    return getNamesMap()
+        .values()
+        .stream()
+        .sorted()
+        .toList();
   }
 
   private boolean checkForMatchingNames(String[] names, Integer listIndex) {
@@ -29,7 +38,7 @@ public class NameMatchProcessor {
       boolean isMatch = !nameOption.getSourceListIndices().contains(listIndex) || nameOption.getSourceListIndices()
           .size() > 1;
 
-      if (isMatch && isCrossCompoundNameMatch()) {
+      if (isMatch && isBidirectionalCompoundMatching()) {
         nameOption.setHasMatch(true);
       }
 
@@ -37,6 +46,8 @@ public class NameMatchProcessor {
     });
   }
 
+  @NotNull
+  @Contract(value = " -> new", pure = true)
   private Map<String, NameOption> createNamesMap() {
     return new HashMap<>();
   }
@@ -45,18 +56,20 @@ public class NameMatchProcessor {
     String[] splitNames = splitCompoundName(name);
     boolean hasMatch = checkForMatchingNames(splitNames, listIndex);
 
-    NameOption newNameOption = new NameOption();
-    newNameOption.setName(name);
-    newNameOption.setHasMatch(hasMatch);
-    newNameOption.getSourceListIndices().add(listIndex);
-    getNamesMap().put(name, newNameOption);
+    getNamesMap().put(name, NameOption.builder()
+            .name(name)
+            .hasMatch(hasMatch)
+            .sourceListIndices(new HashSet<>(List.of(listIndex)))
+            .build()
+    );
   }
 
+  @NotNull
   private NameOption createNewOption(String name, Integer listIndex) {
-    NameOption newOption = new NameOption();
-    newOption.setName(name);
-    newOption.getSourceListIndices().add(listIndex);
-    return newOption;
+    return NameOption.builder()
+        .name(name)
+        .sourceListIndices(new HashSet<>(List.of(listIndex)))
+        .build();
   }
 
   private Map<String, NameOption> getNamesMap() {
@@ -66,11 +79,12 @@ public class NameMatchProcessor {
     return namesMap;
   }
 
-  private boolean isCompoundName(String name) {
+  @Contract(pure = true)
+  private boolean isCompoundName(@NotNull String name) {
     return name.contains(" ");
   }
 
-  private void processAllNames(List<List<String>> filesContent) {
+  private void processAllNames(@NotNull List<List<String>> filesContent) {
     for (int i = 0; i < filesContent.size(); i++) {
       List<String> fileContent = filesContent.get(i);
       for (String name : fileContent) {
@@ -102,18 +116,22 @@ public class NameMatchProcessor {
   }
 
 
-  private String[] splitCompoundName(String name) {
+  @NotNull
+  @Contract(pure = true)
+  private String[] splitCompoundName(@NotNull String name) {
     return name.split(" ");
   }
 
-  private void updateExistingNameOption(NameOption nameOption, Integer listIndex) {
+  private void updateExistingNameOption(@NotNull NameOption nameOption, Integer listIndex) {
     if (!nameOption.getSourceListIndices().contains(listIndex)) {
       nameOption.setHasMatch(true);
       nameOption.getSourceListIndices().add(listIndex);
     }
   }
 
-  private NameOption updateExistingOption(NameOption option, Integer listIndex) {
+  @NotNull
+  @Contract("_, _ -> param1")
+  private NameOption updateExistingOption(@NotNull NameOption option, Integer listIndex) {
     if (!option.getSourceListIndices().contains(listIndex)) {
       option.setHasMatch(true);
       option.getSourceListIndices().add(listIndex);
