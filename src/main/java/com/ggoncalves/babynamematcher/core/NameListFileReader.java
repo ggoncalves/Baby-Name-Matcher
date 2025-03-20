@@ -1,7 +1,7 @@
-package com.ggoncalves.babynamematcher;
+package com.ggoncalves.babynamematcher.core;
 
 import com.google.common.annotations.VisibleForTesting;
-import lombok.RequiredArgsConstructor;
+import lombok.Builder;
 import lombok.SneakyThrows;
 
 import java.nio.file.Files;
@@ -10,18 +10,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-@RequiredArgsConstructor
-public class BabyNameMatcherApp {
-
-  public void run(String[] args) {
-    List<List<String>> filesContent = getFilesContent(args);
-
-    // TODO implement me
-  }
+@Builder
+public class NameListFileReader {
 
   @VisibleForTesting
   @SneakyThrows
-  List<List<String>> getFilesContent(String[] args) {
+  List<List<String>> readNameListFromFiles(String[] args) {
     List<List<String>> filesContent = new ArrayList<>(args.length);
     for (String filePath : args) {
       Path path = Paths.get(filePath);

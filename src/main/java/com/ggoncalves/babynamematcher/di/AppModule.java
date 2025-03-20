@@ -1,6 +1,7 @@
 package com.ggoncalves.babynamematcher.di;
 
-import com.ggoncalves.babynamematcher.BabyNameMatcherApp;
+import com.ggoncalves.babynamematcher.core.NameMatchProcessor;
+import com.ggoncalves.babynamematcher.core.NameListFileReader;
 import com.ggoncalves.babynamematcher.exception.ExceptionHandler;
 import com.ggoncalves.babynamematcher.validator.FilePathValidator;
 import dagger.Module;
@@ -36,7 +37,13 @@ public class AppModule {
 
   @Provides
   @Singleton
-  public BabyNameMatcherApp provideBabyNameMatcherApp() {
-    return new BabyNameMatcherApp();
+  public NameListFileReader provideNameListFileReader() {
+    return NameListFileReader.builder().build();
+  }
+
+  @Provides
+  @Singleton
+  public NameMatchProcessor provideBabyNameMatcherApp(NameListFileReader nameListFileReader) {
+    return new NameMatchProcessor(nameListFileReader);
   }
 }

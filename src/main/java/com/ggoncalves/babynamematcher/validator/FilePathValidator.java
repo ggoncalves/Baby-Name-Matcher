@@ -9,7 +9,6 @@ public class FilePathValidator {
 
   public boolean isValidExistingFilePath(String filePath) {
     if (isEmptyOrNullFilePath(filePath)) return false;
-
     try {
       return Files.exists(Paths.get(filePath));
     }
@@ -36,7 +35,7 @@ public class FilePathValidator {
     ValidationResult.ValidationResultBuilder validationResultBuilder = ValidationResult
         .builder().filePath(filePath);
 
-    if (filePath == null || filePath.trim().isEmpty()) {
+    if (isEmptyOrNullFilePath(filePath)) {
       return validationResultBuilder
           .valid(false)
           .errorMessage("Path is null or empty")
@@ -58,7 +57,8 @@ public class FilePathValidator {
             .isDirectory(Files.isDirectory(path))
             .readable(file.canRead())
             .writable(file.canWrite())
-            .executable(file.canExecute());
+            .executable(file.canExecute())
+            .isBlank(file.length() == 0);
       }
 
     }

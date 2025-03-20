@@ -14,4 +14,5 @@ public class ValidationResult {
   private boolean writable;
   private boolean executable;
   private String errorMessage;
+  private boolean isBlank;
 }

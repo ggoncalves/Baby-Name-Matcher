@@ -35,6 +35,7 @@ class FilePathValidatorTest {
   private Path nonExistentFile;
   private Path existingDirectory;
   private Path readOnlyFile;
+  private Path notEmptyFile;
 
   @BeforeEach
   void setUp() throws IOException {
@@ -43,10 +44,13 @@ class FilePathValidatorTest {
     existingFile = tempDir.resolve("test-file.txt");
     nonExistentFile = tempDir.resolve("non-existent-file.txt");
     readOnlyFile = tempDir.resolve("read-only-file.txt");
+    notEmptyFile = tempDir.resolve("not-empty-file.txt");
+
 
     // Create the files
     Files.createFile(existingFile);
     Files.createFile(readOnlyFile);
+    Files.write(notEmptyFile, "Some content".getBytes());
 
     // Make read-only file actually read-only
     File readOnlyFileObj = readOnlyFile.toFile();
@@ -58,6 +62,7 @@ class FilePathValidatorTest {
   @Nested
   @DisplayName("Tests for isValidExistingFilePath")
   class IsValidExistingFilePathTests {
+
 
     @Test
     @DisplayName("Should return false for null path")
@@ -76,6 +81,12 @@ class FilePathValidatorTest {
     @DisplayName("Should return true for existing file")
     void shouldReturnTrueForExistingFile() {
       assertThat(filePathValidator.isValidExistingFilePath(existingFile.toString())).isTrue();
+    }
+
+    @Test
+    @DisplayName("Should return true for non-empty file")
+    void shouldReturnTrueForNotEmptyFile() {
+      assertThat(filePathValidator.isValidExistingFilePath(notEmptyFile.toString())).isTrue();
     }
 
     @Test
@@ -183,6 +194,21 @@ class FilePathValidatorTest {
       assertThat(result.isDirectory()).isFalse();
       assertThat(result.isReadable()).isTrue();
       assertThat(result.isWritable()).isTrue();
+      assertThat(result.isBlank()).isTrue();
+      assertThat(result.getErrorMessage()).isNull();
+    }
+
+    @Test
+    @DisplayName("Should return valid result with correct attributes for not empty file")
+    void shouldReturnValidResultWithCorrectAttributesForNotEmptyFile() {
+      ValidationResult result = filePathValidator.validateFilePath(notEmptyFile.toString());
+
+      assertThat(result.isValid()).isTrue();
+      assertThat(result.isExists()).isTrue();
+      assertThat(result.isDirectory()).isFalse();
+      assertThat(result.isReadable()).isTrue();
+      assertThat(result.isWritable()).isTrue();
+      assertThat(result.isBlank()).isFalse();
       assertThat(result.getErrorMessage()).isNull();
     }
 
@@ -248,6 +274,7 @@ class FilePathValidatorTest {
       result.setReadable(true);
       result.setWritable(true);
       result.setExecutable(true);
+      result.setBlank(true);
       result.setErrorMessage("Test error");
 
       assertThat(result.isValid()).isTrue();
@@ -256,6 +283,7 @@ class FilePathValidatorTest {
       assertThat(result.isReadable()).isTrue();
       assertThat(result.isWritable()).isTrue();
       assertThat(result.isExecutable()).isTrue();
+      assertThat(result.isBlank()).isTrue();
       assertThat(result.getErrorMessage()).isEqualTo("Test error");
     }
   }

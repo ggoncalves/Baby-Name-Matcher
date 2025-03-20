@@ -1,6 +1,6 @@
 package com.ggoncalves.babynamematcher.main;
 
-import com.ggoncalves.babynamematcher.BabyNameMatcherApp;
+import com.ggoncalves.babynamematcher.core.NameMatchProcessor;
 import com.ggoncalves.babynamematcher.exception.ExceptionHandler;
 import com.ggoncalves.babynamematcher.exception.FilePermissionException;
 import com.ggoncalves.babynamematcher.exception.InvalidFileException;
@@ -21,7 +21,6 @@ import static org.mockito.Mockito.argThat;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,7 +33,7 @@ public class BabyNameMatcherMainTest {
   private ExceptionHandler exceptionHandler;
 
   @Mock
-  private BabyNameMatcherApp babyNameMatcherApp;
+  private NameMatchProcessor nameMatchProcessor;
 
   @InjectMocks
   private BabyNameMatcherMain babyNameMatcherMain;
@@ -59,7 +58,7 @@ public class BabyNameMatcherMainTest {
 
   @NotNull
   private BabyNameMatcherMain createBabyNameMatcherMain(String[] paths) {
-    return new BabyNameMatcherMain(paths, exceptionHandler, filePathValidator, babyNameMatcherApp);
+    return new BabyNameMatcherMain(paths, exceptionHandler, filePathValidator, nameMatchProcessor);
   }
 
   @Test
@@ -82,8 +81,8 @@ public class BabyNameMatcherMainTest {
     // Verify each path was validated
     verify(filePathValidator).validateFilePath("valid_file1.txt");
     verify(filePathValidator).validateFilePath("valid_file2.txt");
-    verifyNoMoreInteractions(filePathValidator);
     verifyNoInteractions(exceptionHandler);
+    verify(nameMatchProcessor).processAndGetMatchingNames(paths);
   }
 
   private static ValidationResult createValidResultForFile(String filePath) {
@@ -95,6 +94,7 @@ public class BabyNameMatcherMainTest {
         .readable(true)
         .writable(true)
         .executable(false)
+        .isBlank(false)
         .build();
   }
 
@@ -113,6 +113,7 @@ public class BabyNameMatcherMainTest {
         .writable(false)
         .executable(false)
         .errorMessage("File does not exist")
+        .isBlank(false)
         .build();
 
     when(filePathValidator.validateFilePath("invalid_file.txt")).thenReturn(invalidResult);
@@ -126,6 +127,7 @@ public class BabyNameMatcherMainTest {
     verify(exceptionHandler).handle(any(InvalidFileException.class));
     verify(exceptionHandler).handle(argThat(e -> e.getMessage()
         .contains("File does not exist")));
+    verifyNoInteractions(nameMatchProcessor);
   }
 
   @Test
@@ -143,6 +145,7 @@ public class BabyNameMatcherMainTest {
         .writable(true)
         .executable(true)
         .errorMessage(null)
+        .isBlank(false)
         .build();
 
     when(filePathValidator.validateFilePath("directory_path")).thenReturn(directoryResult);
@@ -156,6 +159,7 @@ public class BabyNameMatcherMainTest {
     verify(exceptionHandler).handle(any(InvalidFileException.class));
     verify(exceptionHandler).handle(argThat(e -> e.getMessage()
         .contains("File is a directory")));
+    verifyNoInteractions(nameMatchProcessor);
   }
 
   @Test
@@ -173,6 +177,7 @@ public class BabyNameMatcherMainTest {
         .writable(true)
         .executable(false)
         .errorMessage(null)
+        .isBlank(false)
         .build();
 
     when(filePathValidator.validateFilePath("unreadable_file.txt")).thenReturn(unreadableResult);
@@ -186,6 +191,39 @@ public class BabyNameMatcherMainTest {
     verify(exceptionHandler).handle(any(FilePermissionException.class));
     verify(exceptionHandler).handle(argThat(e -> e.getMessage()
         .contains("Cannot read file")));
+    verifyNoInteractions(nameMatchProcessor);
+  }
+
+  @Test
+  @DisplayName("Should show error for valid file with empty content")
+  void shouldShowErrorForValidFileWithEmptyContent() {
+    // Arrange
+    String[] paths = {"empty_file.txt", "valid_file.txt"};
+
+    ValidationResult emptyFileResult = ValidationResult.builder()
+        .filePath("empty_file.txt")
+        .valid(true)
+        .exists(true)
+        .isDirectory(false)
+        .readable(true)
+        .writable(true)
+        .executable(false)
+        .errorMessage(null)
+        .isBlank(true)
+        .build();
+
+    when(filePathValidator.validateFilePath("empty_file.txt")).thenReturn(emptyFileResult);
+
+    babyNameMatcherMain = createBabyNameMatcherMain(paths);
+
+    // Act & Assert
+    babyNameMatcherMain.run();
+
+    verify(filePathValidator).validateFilePath("empty_file.txt");
+    verify(exceptionHandler).handle(any(InvalidFileException.class));
+    verify(exceptionHandler).handle(argThat(e -> e.getMessage()
+        .contains("File has no content or is blank")));
+    verifyNoInteractions(nameMatchProcessor);
   }
 
   @Test
@@ -203,6 +241,7 @@ public class BabyNameMatcherMainTest {
         .writable(true)
         .executable(false)
         .errorMessage(null)
+        .isBlank(false)
         .build();
 
     ValidationResult directoryResult = ValidationResult.builder()
@@ -214,6 +253,7 @@ public class BabyNameMatcherMainTest {
         .writable(true)
         .executable(true)
         .errorMessage(null)
+        .isBlank(false)
         .build();
 
     when(filePathValidator.validateFilePath("valid_file.txt")).thenReturn(validResult);
@@ -231,5 +271,6 @@ public class BabyNameMatcherMainTest {
     verify(exceptionHandler).handle(any(InvalidFileException.class));
     verify(exceptionHandler).handle(argThat(e -> e.getMessage()
         .contains("File is a directory")));
+    verifyNoInteractions(nameMatchProcessor);
   }
 }

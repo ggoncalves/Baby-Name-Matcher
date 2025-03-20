@@ -1,6 +1,6 @@
 package com.ggoncalves.babynamematcher.main;
 
-import com.ggoncalves.babynamematcher.BabyNameMatcherApp;
+import com.ggoncalves.babynamematcher.core.NameMatchProcessor;
 import com.ggoncalves.babynamematcher.di.AppComponent;
 import com.ggoncalves.babynamematcher.di.AppModule;
 import com.ggoncalves.babynamematcher.di.DaggerAppComponent;
@@ -22,17 +22,17 @@ public class BabyNameMatcherMain {
   private final String[] paths;
   private final ExceptionHandler exceptionHandler;
   private final FilePathValidator filePathValidator;
-  private final BabyNameMatcherApp babyNameMatcherApp;
+  private final NameMatchProcessor nameMatchProcessor;
 
   @Inject
   public BabyNameMatcherMain(String[] paths,
                              ExceptionHandler exceptionHandler,
                              FilePathValidator filePathValidator,
-                             BabyNameMatcherApp babyNameMatcherApp) {
+                             NameMatchProcessor nameMatchProcessor) {
     this.paths = paths;
     this.exceptionHandler = exceptionHandler;
     this.filePathValidator = filePathValidator;
-    this.babyNameMatcherApp = babyNameMatcherApp;
+    this.nameMatchProcessor = nameMatchProcessor;
   }
 
   public void run() {
@@ -46,7 +46,7 @@ public class BabyNameMatcherMain {
   }
 
   private void runApplication(String[] paths) {
-    babyNameMatcherApp.run(paths);
+    nameMatchProcessor.processAndGetMatchingNames(paths);
   }
 
   private void validatePaths(String... paths) {
@@ -68,6 +68,9 @@ public class BabyNameMatcherMain {
     }
     if (result.isDirectory()) {
       throw new InvalidFileException("File is a directory");
+    }
+    if (result.isBlank()) {
+      throw new InvalidFileException("File has no content or is blank");
     }
     if (!result.isReadable()) {
       throw new FilePermissionException("Cannot read file");
