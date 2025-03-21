@@ -20,12 +20,12 @@ public class NameMatchProcessor {
   // External dependencies
   private final NameListFileReader nameListFileReader;
 
-  private Map<String, NameOption> namesMap;
+  private Map<NormalizedNameKey, NameOption> namesMap;
   private boolean bidirectionalCompoundMatching;
 
   public List<NameOption> processAndGetMatchingNames(String[] args) {
     List<List<String>> namesFromFiles = nameListFileReader.readNameListFromFiles(args);
-    processAllNames(namesFromFiles);
+    processNamesFromAllLists(namesFromFiles);
     return getNamesMap()
         .values()
         .stream()
@@ -33,7 +33,7 @@ public class NameMatchProcessor {
         .toList();
   }
 
-  private boolean checkForMatchingNames(String[] names, Integer listIndex) {
+  private boolean checkForMatchingNames(NormalizedNameKey[] names, Integer listIndex) {
     return Arrays.stream(names).filter(getNamesMap()::containsKey).map(getNamesMap()::get).anyMatch(nameOption -> {
       boolean isMatch = !nameOption.getSourceListIndices().contains(listIndex) || nameOption.getSourceListIndices()
           .size() > 1;
@@ -48,31 +48,36 @@ public class NameMatchProcessor {
 
   @NotNull
   @Contract(value = " -> new", pure = true)
-  private Map<String, NameOption> createNamesMap() {
+  private Map<NormalizedNameKey, NameOption> createNamesMap() {
     return new HashMap<>();
   }
 
-  private void createNewNameOption(String name, Integer listIndex) {
+  private void createCompoundNameOptionWithMatchCheck(NormalizedNameKey name, Integer listIndex) {
     String[] splitNames = splitCompoundName(name);
-    boolean hasMatch = checkForMatchingNames(splitNames, listIndex);
+
+    NormalizedNameKey[] normalizedNames = Arrays.stream(splitNames)
+        .map(NormalizedNameKey::new)
+        .toArray(NormalizedNameKey[]::new);
+
+    boolean hasMatch = checkForMatchingNames(normalizedNames, listIndex);
 
     getNamesMap().put(name, NameOption.builder()
             .name(name)
             .hasMatch(hasMatch)
             .sourceListIndices(new HashSet<>(List.of(listIndex)))
             .build()
-    );
+                     );
   }
 
   @NotNull
-  private NameOption createNewOption(String name, Integer listIndex) {
+  private NameOption createNewOption(NormalizedNameKey name, Integer listIndex) {
     return NameOption.builder()
         .name(name)
         .sourceListIndices(new HashSet<>(List.of(listIndex)))
         .build();
   }
 
-  private Map<String, NameOption> getNamesMap() {
+  private Map<NormalizedNameKey, NameOption> getNamesMap() {
     if (namesMap == null) {
       namesMap = createNamesMap();
     }
@@ -84,32 +89,33 @@ public class NameMatchProcessor {
     return name.contains(" ");
   }
 
-  private void processAllNames(@NotNull List<List<String>> filesContent) {
+  private void processNamesFromAllLists(@NotNull List<List<String>> filesContent) {
+
     for (int i = 0; i < filesContent.size(); i++) {
       List<String> fileContent = filesContent.get(i);
       for (String name : fileContent) {
         if (isCompoundName(name)) {
-          processCompoundName(name, i);
+          processCompoundName(new NormalizedNameKey(name), i);
         }
         else {
-          processSimpleName(name, i);
+          processSimpleName(new NormalizedNameKey(name), i);
         }
       }
     }
   }
 
-  private void processCompoundName(String name, Integer listIndex) {
-    Map<String, NameOption> namesMap = getNamesMap();
+  private void processCompoundName(NormalizedNameKey name, Integer listIndex) {
+    Map<NormalizedNameKey, NameOption> namesMap = getNamesMap();
 
     if (namesMap.containsKey(name)) {
-      updateExistingNameOption(namesMap.get(name), listIndex);
+      updateExistingOption(namesMap.get(name), listIndex);
     }
     else {
-      createNewNameOption(name, listIndex);
+      createCompoundNameOptionWithMatchCheck(name, listIndex);
     }
   }
 
-  private void processSimpleName(String name, Integer listIndex) {
+  private void processSimpleName(NormalizedNameKey name, Integer listIndex) {
     getNamesMap().compute(name, (key, existingOption) -> Optional.ofNullable(existingOption)
         .map(option -> updateExistingOption(option, listIndex))
         .orElseGet(() -> createNewOption(name, listIndex)));
@@ -118,15 +124,8 @@ public class NameMatchProcessor {
 
   @NotNull
   @Contract(pure = true)
-  private String[] splitCompoundName(@NotNull String name) {
-    return name.split(" ");
-  }
-
-  private void updateExistingNameOption(@NotNull NameOption nameOption, Integer listIndex) {
-    if (!nameOption.getSourceListIndices().contains(listIndex)) {
-      nameOption.setHasMatch(true);
-      nameOption.getSourceListIndices().add(listIndex);
-    }
+  private String[] splitCompoundName(@NotNull NormalizedNameKey name) {
+    return name.getNormalized().split(" ");
   }
 
   @NotNull
