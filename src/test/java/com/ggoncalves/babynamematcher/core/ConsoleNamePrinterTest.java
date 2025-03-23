@@ -33,6 +33,19 @@ public class ConsoleNamePrinterTest {
   }
 
   @Test
+  @DisplayName("Should print 3 matching names in verbose mode")
+  void shouldPrintThreeMatchingNamesInVerboseMode() {
+    // Given
+    List<NameOption> threeMatchingNames = NameOptionTestDataFactory.createFromStandardTwoListNameOptions();
+
+    // When
+    consoleNamePrinter.print(threeMatchingNames, true);
+
+    // Then
+    verify(consoleNamePrinter).println(getExpectedThreeMatchingNamesVerboseOutput());
+  }
+
+  @Test
   @DisplayName("Should print message for no matching names")
   void shouldPrintMessageForNoMatchingNames() {
     // Given
@@ -52,6 +65,20 @@ public class ConsoleNamePrinterTest {
         buildStringWithLineBreaks("Fatima") +
         buildStringWithLineBreaks("Ana Carolina") +
         buildStringWithLineBreaks("Ana Julia", 2) +
+        buildStringWithLineBreaks("Demais nomes não encontrados em mais de uma lista:", 2) +
+        buildStringWithLineBreaks("Ana") +
+        buildStringWithLineBreaks("Julia") +
+        buildStringWithLineBreaks("Maria") +
+        buildStringWithLineBreaks("Mariana");
+  }
+
+  private String getExpectedThreeMatchingNamesVerboseOutput() {
+    return
+        buildStringWithLineBreaks("Resultado Final", 2) +
+        buildStringWithLineBreaks("Nomes encontrados em mais de uma lista ou em nomes compostos:", 2) +
+        buildStringWithLineBreaks("Fatima (encontrado em 2 listas)") +
+        buildStringWithLineBreaks("Ana Carolina (encontrado parte do nome em outra lista)") +
+        buildStringWithLineBreaks("Ana Julia (encontrado parte do nome em outra lista)", 2) +
         buildStringWithLineBreaks("Demais nomes não encontrados em mais de uma lista:", 2) +
         buildStringWithLineBreaks("Ana") +
         buildStringWithLineBreaks("Julia") +
