@@ -1,6 +1,8 @@
 package com.ggoncalves.babynamematcher.main;
 
+import com.ggoncalves.babynamematcher.core.ConsoleNamePrinter;
 import com.ggoncalves.babynamematcher.core.NameMatchProcessor;
+import com.ggoncalves.babynamematcher.core.NameOption;
 import com.ggoncalves.babynamematcher.exception.ExceptionHandler;
 import com.ggoncalves.babynamematcher.exception.FilePermissionException;
 import com.ggoncalves.babynamematcher.exception.InvalidFileException;
@@ -15,9 +17,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.argThat;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -25,6 +31,9 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class BabyNameMatcherMainTest {
+
+  @Mock
+  private List<NameOption> mockMatchingNames;
 
   @Mock
   private FilePathValidator filePathValidator;
@@ -35,8 +44,24 @@ public class BabyNameMatcherMainTest {
   @Mock
   private NameMatchProcessor nameMatchProcessor;
 
+  @Mock
+  private ConsoleNamePrinter consoleNamePrinter;
+
   @InjectMocks
   private BabyNameMatcherMain babyNameMatcherMain;
+
+  private static ValidationResult createValidResultForFile(String filePath) {
+    return ValidationResult.builder()
+        .filePath(filePath)
+        .valid(true)
+        .exists(true)
+        .isDirectory(false)
+        .readable(true)
+        .writable(true)
+        .executable(false)
+        .isBlank(false)
+        .build();
+  }
 
   @Test
   @DisplayName("Should show error asking for at least two lists")
@@ -56,11 +81,6 @@ public class BabyNameMatcherMainTest {
         .contains("At least two name lists are required for matching")));
   }
 
-  @NotNull
-  private BabyNameMatcherMain createBabyNameMatcherMain(String[] paths) {
-    return new BabyNameMatcherMain(paths, exceptionHandler, filePathValidator, nameMatchProcessor);
-  }
-
   @Test
   @DisplayName("Should process valid file paths without throwing exceptions")
   void shouldProcessValidFilePaths() {
@@ -72,6 +92,7 @@ public class BabyNameMatcherMainTest {
 
     when(filePathValidator.validateFilePath("valid_file1.txt")).thenReturn(validResult1);
     when(filePathValidator.validateFilePath("valid_file2.txt")).thenReturn(validResult2);
+    when(nameMatchProcessor.processAndGetMatchingNames(paths)).thenReturn(mockMatchingNames);
 
     babyNameMatcherMain = createBabyNameMatcherMain(paths);
 
@@ -83,19 +104,7 @@ public class BabyNameMatcherMainTest {
     verify(filePathValidator).validateFilePath("valid_file2.txt");
     verifyNoInteractions(exceptionHandler);
     verify(nameMatchProcessor).processAndGetMatchingNames(paths);
-  }
-
-  private static ValidationResult createValidResultForFile(String filePath) {
-    return ValidationResult.builder()
-        .filePath(filePath)
-        .valid(true)
-        .exists(true)
-        .isDirectory(false)
-        .readable(true)
-        .writable(true)
-        .executable(false)
-        .isBlank(false)
-        .build();
+    verify(consoleNamePrinter).print(mockMatchingNames);
   }
 
   @Test
@@ -128,6 +137,7 @@ public class BabyNameMatcherMainTest {
     verify(exceptionHandler).handle(argThat(e -> e.getMessage()
         .contains("File does not exist")));
     verifyNoInteractions(nameMatchProcessor);
+    verifyNoInteractions(consoleNamePrinter);
   }
 
   @Test
@@ -192,6 +202,7 @@ public class BabyNameMatcherMainTest {
     verify(exceptionHandler).handle(argThat(e -> e.getMessage()
         .contains("Cannot read file")));
     verifyNoInteractions(nameMatchProcessor);
+    verifyNoInteractions(consoleNamePrinter);
   }
 
   @Test
@@ -224,6 +235,7 @@ public class BabyNameMatcherMainTest {
     verify(exceptionHandler).handle(argThat(e -> e.getMessage()
         .contains("File has no content or is blank")));
     verifyNoInteractions(nameMatchProcessor);
+    verifyNoInteractions(consoleNamePrinter);
   }
 
   @Test
@@ -232,17 +244,7 @@ public class BabyNameMatcherMainTest {
     // Arrange
     String[] paths = {"valid_file.txt", "directory_path", "should_not_reach.txt"};
 
-    ValidationResult validResult = ValidationResult.builder()
-        .filePath("valid_file.txt")
-        .valid(true)
-        .exists(true)
-        .isDirectory(false)
-        .readable(true)
-        .writable(true)
-        .executable(false)
-        .errorMessage(null)
-        .isBlank(false)
-        .build();
+    ValidationResult validResult = createValidResultForFile("valid_file.txt");
 
     ValidationResult directoryResult = ValidationResult.builder()
         .filePath("directory_path")
@@ -272,5 +274,32 @@ public class BabyNameMatcherMainTest {
     verify(exceptionHandler).handle(argThat(e -> e.getMessage()
         .contains("File is a directory")));
     verifyNoInteractions(nameMatchProcessor);
+    verifyNoInteractions(consoleNamePrinter);
+  }
+
+  @Test
+  @DisplayName("Should not called name printer when error during name matching names")
+  void shouldNotCalledNamePrinterWhenErrorDuringNameMatchingNames() {
+    // Arrange
+    String[] paths = {"path1.txt", "path2.txt"};
+    when(filePathValidator.validateFilePath(anyString())).thenReturn(createValidResultForFile("anyPath"));
+    doThrow(new RuntimeException("Error during matching names"))
+        .when(nameMatchProcessor).processAndGetMatchingNames(paths);
+
+    // Act & Assert
+    babyNameMatcherMain = createBabyNameMatcherMain(paths);
+    babyNameMatcherMain.run();
+
+    // Verify
+    verify(filePathValidator).validateFilePath("path1.txt");
+    verify(filePathValidator).validateFilePath("path2.txt");
+    verify(nameMatchProcessor).processAndGetMatchingNames(paths);
+    verify(exceptionHandler).handle(any(Throwable.class));
+    verifyNoInteractions(consoleNamePrinter);
+  }
+
+  @NotNull
+  private BabyNameMatcherMain createBabyNameMatcherMain(String[] paths) {
+    return new BabyNameMatcherMain(paths, exceptionHandler, filePathValidator, nameMatchProcessor, consoleNamePrinter);
   }
 }

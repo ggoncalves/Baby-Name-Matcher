@@ -27,19 +27,4 @@ public class NameOption implements Comparable<NameOption>{
     }
     return name.getNormalized().compareTo(o.getName().getNormalized());
   }
-
-//  public static String normalizePreservingCase(String input) {
-//    if (input == null) return "";
-//
-//    StringBuilder result = new StringBuilder(input.length());
-//
-//    for (int i = 0; i < input.length(); i++) {
-//      String c = String.valueOf(input.charAt(i));
-//      String normalized = Normalizer.normalize(c, Normalizer.Form.NFD)
-//          .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
-//      result.append(normalized.isEmpty() ? "" : normalized);
-//    }
-//
-//    return result.toString();
-//  }
 }

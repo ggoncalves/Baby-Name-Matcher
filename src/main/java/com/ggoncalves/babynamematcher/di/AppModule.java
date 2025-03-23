@@ -1,5 +1,6 @@
 package com.ggoncalves.babynamematcher.di;
 
+import com.ggoncalves.babynamematcher.core.ConsoleNamePrinter;
 import com.ggoncalves.babynamematcher.core.NameMatchProcessor;
 import com.ggoncalves.babynamematcher.core.NameListFileReader;
 import com.ggoncalves.babynamematcher.exception.ExceptionHandler;
@@ -40,10 +41,15 @@ public class AppModule {
   public NameListFileReader provideNameListFileReader() {
     return NameListFileReader.builder().build();
   }
-
   @Provides
   @Singleton
   public NameMatchProcessor provideBabyNameMatcherApp(NameListFileReader nameListFileReader) {
     return new NameMatchProcessor(nameListFileReader);
+  }
+
+  @Provides
+  @Singleton
+  public ConsoleNamePrinter provideConsoleNamePrinter() {
+    return ConsoleNamePrinter.builder().build();
   }
 }

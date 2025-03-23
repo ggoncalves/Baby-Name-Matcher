@@ -1,6 +1,8 @@
 package com.ggoncalves.babynamematcher.main;
 
+import com.ggoncalves.babynamematcher.core.ConsoleNamePrinter;
 import com.ggoncalves.babynamematcher.core.NameMatchProcessor;
+import com.ggoncalves.babynamematcher.core.NameOption;
 import com.ggoncalves.babynamematcher.di.AppComponent;
 import com.ggoncalves.babynamematcher.di.AppModule;
 import com.ggoncalves.babynamematcher.di.DaggerAppComponent;
@@ -14,6 +16,7 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 import javax.inject.Inject;
+import java.util.List;
 
 @Log4j2
 public class BabyNameMatcherMain {
@@ -23,30 +26,30 @@ public class BabyNameMatcherMain {
   private final ExceptionHandler exceptionHandler;
   private final FilePathValidator filePathValidator;
   private final NameMatchProcessor nameMatchProcessor;
+  private final ConsoleNamePrinter consoleNamePrinter;
 
   @Inject
   public BabyNameMatcherMain(String[] paths,
                              ExceptionHandler exceptionHandler,
                              FilePathValidator filePathValidator,
-                             NameMatchProcessor nameMatchProcessor) {
+                             NameMatchProcessor nameMatchProcessor,
+                             ConsoleNamePrinter consoleNamePrinter) {
     this.paths = paths;
     this.exceptionHandler = exceptionHandler;
     this.filePathValidator = filePathValidator;
     this.nameMatchProcessor = nameMatchProcessor;
+    this.consoleNamePrinter = consoleNamePrinter;
   }
 
   public void run() {
     try {
       validatePaths(paths);
-      runApplication(paths);
+      List<NameOption> matchingNames = nameMatchProcessor.processAndGetMatchingNames(paths);
+      consoleNamePrinter.print(matchingNames);
     }
     catch (Throwable e) {
       exceptionHandler.handle(e);
     }
-  }
-
-  private void runApplication(String[] paths) {
-    nameMatchProcessor.processAndGetMatchingNames(paths);
   }
 
   private void validatePaths(String... paths) {
