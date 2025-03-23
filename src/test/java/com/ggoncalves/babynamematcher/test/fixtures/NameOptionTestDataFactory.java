@@ -21,6 +21,15 @@ public class NameOptionTestDataFactory {
                         );
   }
 
+  public static List<NameOption> createNoMatchingNameOptions() {
+    return Arrays.asList(
+        buildNameOption("Ana", false, 0),
+        buildNameOption("Julia", false, 0),
+        buildNameOption("Maria", false, 0),
+        buildNameOption("Mariana", false, 1)
+                        );
+  }
+
   public static List<NameOption> createFromAccentuatedTwoListNameOptions() {
     return Arrays.asList(
         buildNameOption("Aa", true, 0, 1),
