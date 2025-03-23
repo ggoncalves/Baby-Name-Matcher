@@ -1,6 +1,6 @@
 package com.ggoncalves.babynamematcher.exception;
 
-import com.ggoncalves.babynamematcher.util.TestAppender;
+import com.ggoncalves.babynamematcher.test.util.TestAppender;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import org.junit.jupiter.api.*;

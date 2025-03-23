@@ -1,4 +1,4 @@
-package com.ggoncalves.babynamematcher.util;
+package com.ggoncalves.babynamematcher.test.util;
 
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;

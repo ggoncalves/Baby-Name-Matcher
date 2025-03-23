@@ -8,9 +8,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
+import static com.ggoncalves.babynamematcher.test.fixtures.NameOptionTestDataFactory.createFromAccentuatedTwoListNameOptions;
+import static com.ggoncalves.babynamematcher.test.fixtures.NameOptionTestDataFactory.createFromOrderedNameOptionsWithBidirectionalMatching;
+import static com.ggoncalves.babynamematcher.test.fixtures.NameOptionTestDataFactory.createFromStandardThreeListNameOptions;
+import static com.ggoncalves.babynamematcher.test.fixtures.NameOptionTestDataFactory.createFromStandardTwoListNameOptions;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -44,7 +47,7 @@ class NameMatchProcessorTest {
     verify(mockNameListFileReader).readNameListFromFiles(any(String[].class));
 
     assertThat(matchingNames).asList().hasSize(7);
-    assertThat(matchingNames).asList().containsExactlyElementsOf(getTwoListsOrderedNameOptions());
+    assertThat(matchingNames).asList().containsExactlyElementsOf(createFromStandardTwoListNameOptions());
   }
 
   @Test
@@ -67,7 +70,7 @@ class NameMatchProcessorTest {
     verify(mockNameListFileReader).readNameListFromFiles(any(String[].class));
 
     assertThat(matchingNames).asList().hasSize(4);
-    assertThat(matchingNames).asList().containsExactlyElementsOf(getTwoListsWithAccentuationOrderedNameOptions());
+    assertThat(matchingNames).asList().containsExactlyElementsOf(createFromAccentuatedTwoListNameOptions());
   }
 
   @Test
@@ -91,7 +94,7 @@ class NameMatchProcessorTest {
     verify(mockNameListFileReader).readNameListFromFiles(any(String[].class));
 
     assertThat(matchingNames).asList().hasSize(10);
-    assertThat(matchingNames).asList().containsExactlyElementsOf(getThreeListsOrderedNameOptions());
+    assertThat(matchingNames).asList().containsExactlyElementsOf(createFromStandardThreeListNameOptions());
   }
 
   @Test
@@ -114,63 +117,7 @@ class NameMatchProcessorTest {
     verify(mockNameListFileReader).readNameListFromFiles(any(String[].class));
 
     assertThat(matchingNames).asList().hasSize(7);
-    assertThat(matchingNames).asList().containsExactlyElementsOf(getOrderedNameOptionsWithBidirectionalMatching());
-  }
-
-  private List<NameOption> getTwoListsOrderedNameOptions() {
-    return Arrays.asList(
-        buildNameOption("Fatima", true, 0, 1),
-        buildNameOption("Ana Carolina", true, 1),
-        buildNameOption("Ana Julia", true, 1),
-        buildNameOption("Ana", false, 0),
-        buildNameOption("Julia", false, 0),
-        buildNameOption("Maria", false, 0),
-        buildNameOption("Mariana", false, 1)
-                        );
-  }
-
-  private List<NameOption> getTwoListsWithAccentuationOrderedNameOptions() {
-    return Arrays.asList(
-        buildNameOption("Aa", true, 0, 1),
-        buildNameOption("aeiouaeioucAEIOUAEIOUC", true, 0, 1),
-        buildNameOption("Ase", true, 0, 1),
-        buildNameOption("Cao", true, 0, 1)
-                        );
-  }
-
-  private List<NameOption> getThreeListsOrderedNameOptions() {
-    return Arrays.asList(
-        buildNameOption("Fatima", true, 0, 1, 2),
-        buildNameOption("Ana Julia", true, 1, 2),
-        buildNameOption("Ana Carolina", true, 1),
-        buildNameOption("Ana", false, 0),
-        buildNameOption("Antonia", false, 2),
-        buildNameOption("Joaquina", false, 2),
-        buildNameOption("Julia", false, 0),
-        buildNameOption("Julieta", false, 2),
-        buildNameOption("Maria", false, 0),
-        buildNameOption("Mariana", false, 1)
-                        );
-  }
-
-  private List<NameOption> getOrderedNameOptionsWithBidirectionalMatching() {
-    return Arrays.asList(
-        buildNameOption("Fatima", true, 0, 1),
-        buildNameOption("Ana", true, 0),
-        buildNameOption("Ana Carolina", true, 1),
-        buildNameOption("Ana Julia", true, 1),
-        buildNameOption("Julia", false, 0),
-        buildNameOption("Maria", false, 0),
-        buildNameOption("Mariana", false, 1)
-                        );
-  }
-
-  private NameOption buildNameOption(String name, boolean hasMatch, Integer... indices) {
-    return NameOption.builder()
-        .name(new NormalizedNameKey(name))
-        .hasMatch(hasMatch)
-        .sourceListIndices(new HashSet<>(Arrays.asList(indices)))
-        .build();
+    assertThat(matchingNames).asList().containsExactlyElementsOf(createFromOrderedNameOptionsWithBidirectionalMatching());
   }
 
   @NotNull
