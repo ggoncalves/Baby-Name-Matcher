@@ -3,8 +3,8 @@ package com.ggoncalves.babynamematcher.di;
 import com.ggoncalves.babynamematcher.core.ConsoleNamePrinter;
 import com.ggoncalves.babynamematcher.core.NameMatchProcessor;
 import com.ggoncalves.babynamematcher.core.NameListFileReader;
-import com.ggoncalves.babynamematcher.exception.ExceptionHandler;
-import com.ggoncalves.babynamematcher.validator.FilePathValidator;
+import com.ggoncalves.ggutils.console.exception.ExceptionHandler;
+import com.ggoncalves.ggutils.console.validation.FilePathValidator;
 import dagger.Module;
 import dagger.Provides;
 

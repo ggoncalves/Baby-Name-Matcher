@@ -6,12 +6,12 @@ import com.ggoncalves.babynamematcher.core.NameOption;
 import com.ggoncalves.babynamematcher.di.AppComponent;
 import com.ggoncalves.babynamematcher.di.AppModule;
 import com.ggoncalves.babynamematcher.di.DaggerAppComponent;
-import com.ggoncalves.babynamematcher.exception.ExceptionHandler;
-import com.ggoncalves.babynamematcher.exception.FilePermissionException;
-import com.ggoncalves.babynamematcher.exception.InvalidFileException;
 import com.ggoncalves.babynamematcher.exception.NotEnoughNameListsException;
-import com.ggoncalves.babynamematcher.validator.FilePathValidator;
-import com.ggoncalves.babynamematcher.validator.ValidationResult;
+import com.ggoncalves.ggutils.console.exception.ExceptionHandler;
+import com.ggoncalves.ggutils.console.exception.FilePermissionException;
+import com.ggoncalves.ggutils.console.exception.InvalidFileException;
+import com.ggoncalves.ggutils.console.validation.FilePathValidator;
+import com.ggoncalves.ggutils.console.validation.ValidationResult;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
