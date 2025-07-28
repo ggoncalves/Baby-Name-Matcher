@@ -26,17 +26,12 @@ public class NameMatchProcessor {
   public List<NameOption> processAndGetMatchingNames(String[] args) {
     List<List<String>> namesFromFiles = nameListFileReader.readNameListFromFiles(args);
     processNamesFromAllLists(namesFromFiles);
-    return getNamesMap()
-        .values()
-        .stream()
-        .sorted()
-        .toList();
+    return getNamesMap().values().stream().sorted().toList();
   }
 
   private boolean checkForMatchingNames(NormalizedNameKey[] names, Integer listIndex) {
     return Arrays.stream(names).filter(getNamesMap()::containsKey).map(getNamesMap()::get).anyMatch(nameOption -> {
-      boolean isMatch = !nameOption.getSourceListIndices().contains(listIndex) || nameOption.getSourceListIndices()
-          .size() > 1;
+      boolean isMatch = !nameOption.getSourceListIndices().contains(listIndex) || nameOption.getSourceListIndices().size() > 1;
 
       if (isMatch && isBidirectionalCompoundMatching()) {
         nameOption.setHasMatch(true);
@@ -55,26 +50,17 @@ public class NameMatchProcessor {
   private void createCompoundNameOptionWithMatchCheck(NormalizedNameKey name, Integer listIndex) {
     String[] splitNames = splitCompoundName(name);
 
-    NormalizedNameKey[] normalizedNames = Arrays.stream(splitNames)
-        .map(NormalizedNameKey::new)
-        .toArray(NormalizedNameKey[]::new);
+    NormalizedNameKey[] normalizedNames = Arrays.stream(splitNames).map(NormalizedNameKey::new).toArray(NormalizedNameKey[]::new);
 
     boolean hasMatch = checkForMatchingNames(normalizedNames, listIndex);
 
-    getNamesMap().put(name, NameOption.builder()
-            .name(name)
-            .hasMatch(hasMatch)
-            .sourceListIndices(new HashSet<>(List.of(listIndex)))
-            .build()
-                     );
+    getNamesMap().put(name, NameOption.builder().name(name).hasMatch(hasMatch).sourceListIndices(new HashSet<>(List.of(listIndex))).build()
+    );
   }
 
   @NotNull
   private NameOption createNewOption(NormalizedNameKey name, Integer listIndex) {
-    return NameOption.builder()
-        .name(name)
-        .sourceListIndices(new HashSet<>(List.of(listIndex)))
-        .build();
+    return NameOption.builder().name(name).sourceListIndices(new HashSet<>(List.of(listIndex))).build();
   }
 
   private Map<NormalizedNameKey, NameOption> getNamesMap() {
@@ -116,9 +102,7 @@ public class NameMatchProcessor {
   }
 
   private void processSimpleName(NormalizedNameKey name, Integer listIndex) {
-    getNamesMap().compute(name, (key, existingOption) -> Optional.ofNullable(existingOption)
-        .map(option -> updateExistingOption(option, listIndex))
-        .orElseGet(() -> createNewOption(name, listIndex)));
+    getNamesMap().compute(name, (key, existingOption) -> Optional.ofNullable(existingOption).map(option -> updateExistingOption(option, listIndex)).orElseGet(() -> createNewOption(name, listIndex)));
   }
 
 

@@ -59,42 +59,15 @@ public class ConsoleNamePrinterTest {
   }
 
   private String getExpectedThreeMatchingNamesOutput() {
-    return
-        buildStringWithLineBreaks("Resultado Final", 2) +
-        buildStringWithLineBreaks("Nomes encontrados em mais de uma lista ou em nomes compostos:", 2) +
-        buildStringWithLineBreaks("Fatima") +
-        buildStringWithLineBreaks("Ana Carolina") +
-        buildStringWithLineBreaks("Ana Julia", 2) +
-        buildStringWithLineBreaks("Demais nomes não encontrados em mais de uma lista:", 2) +
-        buildStringWithLineBreaks("Ana") +
-        buildStringWithLineBreaks("Julia") +
-        buildStringWithLineBreaks("Maria") +
-        buildStringWithLineBreaks("Mariana");
+    return buildStringWithLineBreaks("Resultado Final", 2) + buildStringWithLineBreaks("Nomes encontrados em mais de uma lista ou em nomes compostos:", 2) + buildStringWithLineBreaks("Fatima") + buildStringWithLineBreaks("Ana Carolina") + buildStringWithLineBreaks("Ana Julia", 2) + buildStringWithLineBreaks("Demais nomes não encontrados em mais de uma lista:", 2) + buildStringWithLineBreaks("Ana") + buildStringWithLineBreaks("Julia") + buildStringWithLineBreaks("Maria") + buildStringWithLineBreaks("Mariana");
   }
 
   private String getExpectedThreeMatchingNamesVerboseOutput() {
-    return
-        buildStringWithLineBreaks("Resultado Final", 2) +
-        buildStringWithLineBreaks("Nomes encontrados em mais de uma lista ou em nomes compostos:", 2) +
-        buildStringWithLineBreaks("Fatima (encontrado em 2 listas)") +
-        buildStringWithLineBreaks("Ana Carolina (encontrado parte do nome em outra lista)") +
-        buildStringWithLineBreaks("Ana Julia (encontrado parte do nome em outra lista)", 2) +
-        buildStringWithLineBreaks("Demais nomes não encontrados em mais de uma lista:", 2) +
-        buildStringWithLineBreaks("Ana") +
-        buildStringWithLineBreaks("Julia") +
-        buildStringWithLineBreaks("Maria") +
-        buildStringWithLineBreaks("Mariana");
+    return buildStringWithLineBreaks("Resultado Final", 2) + buildStringWithLineBreaks("Nomes encontrados em mais de uma lista ou em nomes compostos:", 2) + buildStringWithLineBreaks("Fatima (encontrado em 2 listas)") + buildStringWithLineBreaks("Ana Carolina (encontrado parte do nome em outra lista)") + buildStringWithLineBreaks("Ana Julia (encontrado parte do nome em outra lista)", 2) + buildStringWithLineBreaks("Demais nomes não encontrados em mais de uma lista:", 2) + buildStringWithLineBreaks("Ana") + buildStringWithLineBreaks("Julia") + buildStringWithLineBreaks("Maria") + buildStringWithLineBreaks("Mariana");
   }
 
   private String getExpectedNoMatchingNamesOutput() {
-    return
-        buildStringWithLineBreaks("Resultado Final", 2) +
-        buildStringWithLineBreaks("Nenhum nome encontrado em mais de uma lista ou em nomes compostos. =(", 2) +
-        buildStringWithLineBreaks("Demais nomes não encontrados em mais de uma lista:", 2) +
-        buildStringWithLineBreaks("Ana") +
-        buildStringWithLineBreaks("Julia") +
-        buildStringWithLineBreaks("Maria") +
-        buildStringWithLineBreaks("Mariana");
+    return buildStringWithLineBreaks("Resultado Final", 2) + buildStringWithLineBreaks("Nenhum nome encontrado em mais de uma lista ou em nomes compostos. =(", 2) + buildStringWithLineBreaks("Demais nomes não encontrados em mais de uma lista:", 2) + buildStringWithLineBreaks("Ana") + buildStringWithLineBreaks("Julia") + buildStringWithLineBreaks("Maria") + buildStringWithLineBreaks("Mariana");
   }
 
   private String buildStringWithLineBreaks(String s, int numberOfLineBreaks) {

@@ -11,11 +11,9 @@ import java.util.stream.Collectors;
 public class ConsoleNamePrinter {
 
   private static final String HEADER = "Resultado Final";
-  private static final String MATCHED_NAMES_SECTION =
-      "Nomes encontrados em mais de uma lista ou em nomes compostos:";
+  private static final String MATCHED_NAMES_SECTION = "Nomes encontrados em mais de uma lista ou em nomes compostos:";
   private static final String UNMATCHED_NAMES_SECTION = "Demais nomes não encontrados em mais de uma lista:";
-  private static final String NO_MATCHED_NAMES = "Nenhum nome encontrado em mais de uma lista ou em nomes compostos. " +
-      "=(";
+  private static final String NO_MATCHED_NAMES = "Nenhum nome encontrado em mais de uma lista ou em nomes compostos. " + "=(";
   private static final String FOUND_IN_N_LISTS = "(encontrado em %d listas)";
   private static final String FOUND_IN_OTHER_NAME_LIST = "(encontrado parte do nome em outra lista)";
 
@@ -34,8 +32,7 @@ public class ConsoleNamePrinter {
   }
 
   private String buildMatchingNamesString(List<NameOption> matchingNames, boolean isVerbose) {
-    Map<Boolean, List<NameOption>> matchedToListOfNameOptionMap = matchingNames.stream()
-        .collect(Collectors.partitioningBy(NameOption::isHasMatch));
+    Map<Boolean, List<NameOption>> matchedToListOfNameOptionMap = matchingNames.stream().collect(Collectors.partitioningBy(NameOption::isHasMatch));
 
     StringBuilder builder = new StringBuilder();
     mountHeader(builder);
@@ -65,24 +62,22 @@ public class ConsoleNamePrinter {
     mountSection(stringBuilder, MATCHED_NAMES_SECTION);
   }
 
-  private void mountNameOptionList(StringBuilder stringBuilder, boolean isMatched, Map<Boolean,
-      List<NameOption>> matchedToListOfNameOptionMap, boolean isVerbose) {
-    matchedToListOfNameOptionMap.get(isMatched)
-        .forEach(nameOption -> {
-          String name = nameOption.getName().getNormalized();
-          stringBuilder.append(name);
-          if (isMatched && isVerbose) {
-            stringBuilder.append(" ");
-            int listCount = nameOption.getSourceListIndices().size();
-            if (listCount > 1) {
-              stringBuilder.append(String.format(FOUND_IN_N_LISTS, listCount));
-            }
-            else {
-              stringBuilder.append(FOUND_IN_OTHER_NAME_LIST);
-            }
-          }
-          stringBuilder.append(System.lineSeparator());
-        });
+  private void mountNameOptionList(StringBuilder stringBuilder, boolean isMatched, Map<Boolean, List<NameOption>> matchedToListOfNameOptionMap, boolean isVerbose) {
+    matchedToListOfNameOptionMap.get(isMatched).forEach(nameOption -> {
+      String name = nameOption.getName().getNormalized();
+      stringBuilder.append(name);
+      if (isMatched && isVerbose) {
+        stringBuilder.append(" ");
+        int listCount = nameOption.getSourceListIndices().size();
+        if (listCount > 1) {
+          stringBuilder.append(String.format(FOUND_IN_N_LISTS, listCount));
+        }
+        else {
+          stringBuilder.append(FOUND_IN_OTHER_NAME_LIST);
+        }
+      }
+      stringBuilder.append(System.lineSeparator());
+    });
   }
 
   private void mountNoMatchedNamesSection(StringBuilder stringBuilder) {
@@ -90,8 +85,7 @@ public class ConsoleNamePrinter {
   }
 
   private void mountSection(StringBuilder stringBuilder, String text) {
-    stringBuilder.append(text)
-        .append(System.lineSeparator().repeat(2));
+    stringBuilder.append(text).append(System.lineSeparator().repeat(2));
   }
 
   private void mountUnmatchedNamesSection(StringBuilder stringBuilder) {

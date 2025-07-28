@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Data
 @Builder
-public class NameOption implements Comparable<NameOption>{
+public class NameOption implements Comparable<NameOption> {
   private NormalizedNameKey name;
   private boolean hasMatch;
 

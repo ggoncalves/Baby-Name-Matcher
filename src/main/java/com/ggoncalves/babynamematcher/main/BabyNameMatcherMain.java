@@ -29,11 +29,7 @@ public class BabyNameMatcherMain {
   private final ConsoleNamePrinter consoleNamePrinter;
 
   @Inject
-  public BabyNameMatcherMain(String[] paths,
-                             ExceptionHandler exceptionHandler,
-                             FilePathValidator filePathValidator,
-                             NameMatchProcessor nameMatchProcessor,
-                             ConsoleNamePrinter consoleNamePrinter) {
+  public BabyNameMatcherMain(String[] paths, ExceptionHandler exceptionHandler, FilePathValidator filePathValidator, NameMatchProcessor nameMatchProcessor, ConsoleNamePrinter consoleNamePrinter) {
     this.paths = paths;
     this.exceptionHandler = exceptionHandler;
     this.filePathValidator = filePathValidator;
@@ -81,9 +77,7 @@ public class BabyNameMatcherMain {
   }
 
   public static void main(String[] args) {
-    AppComponent appComponent = DaggerAppComponent.builder()
-        .appModule(new AppModule(args))
-        .build();
+    AppComponent appComponent = DaggerAppComponent.builder().appModule(new AppModule(args)).build();
 
     BabyNameMatcherMain main = appComponent.getMainApp();
     main.run();

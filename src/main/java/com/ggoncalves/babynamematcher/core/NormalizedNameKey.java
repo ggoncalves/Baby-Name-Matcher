@@ -31,8 +31,7 @@ public class NormalizedNameKey {
     for (int i = 0; i < words.length; i++) {
       if (!words[i].isEmpty()) {
         String word = words[i].toLowerCase();
-        result.append(Character.toUpperCase(word.charAt(0)))
-            .append(word.substring(1));
+        result.append(Character.toUpperCase(word.charAt(0))).append(word.substring(1));
 
         if (i < words.length - 1) {
           result.append(" ");

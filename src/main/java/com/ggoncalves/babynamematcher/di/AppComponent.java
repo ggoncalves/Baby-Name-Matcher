@@ -13,6 +13,7 @@ public interface AppComponent {
   @Component.Builder
   interface Builder {
     Builder appModule(AppModule appModule);
+
     AppComponent build();
   }
 }

@@ -39,9 +39,7 @@ class NameMatchProcessorTest {
     // When
     nameMatchProcessor = createNameMatchProcessor();
 
-    List<NameOption> matchingNames =
-        nameMatchProcessor.processAndGetMatchingNames(new String[]{"names1.txt", "names2" +
-            ".txt"});
+    List<NameOption> matchingNames = nameMatchProcessor.processAndGetMatchingNames(new String[]{"names1.txt", "names2" + ".txt"});
 
     // Then
     verify(mockNameListFileReader).readNameListFromFiles(any(String[].class));
@@ -62,9 +60,7 @@ class NameMatchProcessorTest {
     // When
     nameMatchProcessor = createNameMatchProcessor();
 
-    List<NameOption> matchingNames =
-        nameMatchProcessor.processAndGetMatchingNames(new String[]{"names1.txt", "names2" +
-            ".txt"});
+    List<NameOption> matchingNames = nameMatchProcessor.processAndGetMatchingNames(new String[]{"names1.txt", "names2" + ".txt"});
 
     // Then
     verify(mockNameListFileReader).readNameListFromFiles(any(String[].class));
@@ -86,9 +82,7 @@ class NameMatchProcessorTest {
     // When
     nameMatchProcessor = createNameMatchProcessor();
 
-    List<NameOption> matchingNames =
-        nameMatchProcessor.processAndGetMatchingNames(new String[]{"names1.txt", "names2" +
-            ".txt"});
+    List<NameOption> matchingNames = nameMatchProcessor.processAndGetMatchingNames(new String[]{"names1.txt", "names2" + ".txt"});
 
     // Then
     verify(mockNameListFileReader).readNameListFromFiles(any(String[].class));
@@ -109,9 +103,7 @@ class NameMatchProcessorTest {
     // When
     nameMatchProcessor = createNameMatchProcessor(true);
 
-    List<NameOption> matchingNames =
-        nameMatchProcessor.processAndGetMatchingNames(new String[]{"names1.txt", "names2" +
-            ".txt"});
+    List<NameOption> matchingNames = nameMatchProcessor.processAndGetMatchingNames(new String[]{"names1.txt", "names2" + ".txt"});
 
     // Then
     verify(mockNameListFileReader).readNameListFromFiles(any(String[].class));

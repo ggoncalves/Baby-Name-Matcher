@@ -30,8 +30,8 @@ class NameListFileReaderTest {
   @DisplayName("Should process two valid list receiving two files with names")
   void shouldProcessTwoValidListReceivingTwoFilesWithNames() {
     // Given
-    ResultFileContent fileContent1 = getResultFileContent("names1.txt","Ana", "João", "Maria");
-    ResultFileContent fileContent2 = getResultFileContent("names2.txt","Pedro", "Paulo", "Carla");
+    ResultFileContent fileContent1 = getResultFileContent("names1.txt", "Ana", "João", "Maria");
+    ResultFileContent fileContent2 = getResultFileContent("names2.txt", "Pedro", "Paulo", "Carla");
     String[] args = {fileContent1.getFile().toString(), fileContent2.getFile().toString()};
 
     // When
@@ -48,13 +48,10 @@ class NameListFileReaderTest {
   @DisplayName("Should process three valid list receiving three files with names")
   void shouldProcessThreeValidListReceivingThreeFilesWithNames() {
     // Given
-    ResultFileContent fileContent1 = getResultFileContent("names1.txt","Ana", "João", "Maria Luiza");
-    ResultFileContent fileContent2 = getResultFileContent("names2.txt","Pedro", "Paulo Roberto", "Carla");
-    ResultFileContent fileContent3 = getResultFileContent("names3.txt","Matheus Gonçalves", "Paulo", "Gláucia");
-    String[] args = {
-        fileContent1.getFile().toString(),
-        fileContent2.getFile().toString(),
-        fileContent3.getFile().toString()
+    ResultFileContent fileContent1 = getResultFileContent("names1.txt", "Ana", "João", "Maria Luiza");
+    ResultFileContent fileContent2 = getResultFileContent("names2.txt", "Pedro", "Paulo Roberto", "Carla");
+    ResultFileContent fileContent3 = getResultFileContent("names3.txt", "Matheus Gonçalves", "Paulo", "Gláucia");
+    String[] args = {fileContent1.getFile().toString(), fileContent2.getFile().toString(), fileContent3.getFile().toString()
     };
 
     // When

@@ -41,6 +41,7 @@ public class AppModule {
   public NameListFileReader provideNameListFileReader() {
     return NameListFileReader.builder().build();
   }
+
   @Provides
   @Singleton
   public NameMatchProcessor provideBabyNameMatcherApp(NameListFileReader nameListFileReader) {

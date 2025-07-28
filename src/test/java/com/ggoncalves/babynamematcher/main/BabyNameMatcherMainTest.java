@@ -51,16 +51,7 @@ public class BabyNameMatcherMainTest {
   private BabyNameMatcherMain babyNameMatcherMain;
 
   private static ValidationResult createValidResultForFile(String filePath) {
-    return ValidationResult.builder()
-        .filePath(filePath)
-        .valid(true)
-        .exists(true)
-        .isDirectory(false)
-        .readable(true)
-        .writable(true)
-        .executable(false)
-        .isBlank(false)
-        .build();
+    return ValidationResult.builder().filePath(filePath).valid(true).exists(true).isDirectory(false).readable(true).writable(true).executable(false).isBlank(false).build();
   }
 
   @Test
@@ -77,8 +68,7 @@ public class BabyNameMatcherMainTest {
     // Verify each path was validated
     verifyNoInteractions(filePathValidator);
     verify(exceptionHandler).handle(any(NotEnoughNameListsException.class));
-    verify(exceptionHandler).handle(argThat(e -> e.getMessage()
-        .contains("At least two name lists are required for matching")));
+    verify(exceptionHandler).handle(argThat(e -> e.getMessage().contains("At least two name lists are required for matching")));
   }
 
   @Test
@@ -113,17 +103,7 @@ public class BabyNameMatcherMainTest {
     // Arrange
     String[] paths = {"invalid_file.txt", "valid_file.txt"};
 
-    ValidationResult invalidResult = ValidationResult.builder()
-        .filePath("invalid_file.txt")
-        .valid(false)
-        .exists(false)
-        .isDirectory(false)
-        .readable(false)
-        .writable(false)
-        .executable(false)
-        .errorMessage("File does not exist")
-        .isBlank(false)
-        .build();
+    ValidationResult invalidResult = ValidationResult.builder().filePath("invalid_file.txt").valid(false).exists(false).isDirectory(false).readable(false).writable(false).executable(false).errorMessage("File does not exist").isBlank(false).build();
 
     when(filePathValidator.validateFilePath("invalid_file.txt")).thenReturn(invalidResult);
 
@@ -134,8 +114,7 @@ public class BabyNameMatcherMainTest {
 
     verify(filePathValidator).validateFilePath("invalid_file.txt");
     verify(exceptionHandler).handle(any(InvalidFileException.class));
-    verify(exceptionHandler).handle(argThat(e -> e.getMessage()
-        .contains("File does not exist")));
+    verify(exceptionHandler).handle(argThat(e -> e.getMessage().contains("File does not exist")));
     verifyNoInteractions(nameMatchProcessor);
     verifyNoInteractions(consoleNamePrinter);
   }
@@ -146,17 +125,7 @@ public class BabyNameMatcherMainTest {
     // Arrange
     String[] paths = {"directory_path", "valid_file.txt"};
 
-    ValidationResult directoryResult = ValidationResult.builder()
-        .filePath("directory_path")
-        .valid(true)
-        .exists(true)
-        .isDirectory(true)
-        .readable(true)
-        .writable(true)
-        .executable(true)
-        .errorMessage(null)
-        .isBlank(false)
-        .build();
+    ValidationResult directoryResult = ValidationResult.builder().filePath("directory_path").valid(true).exists(true).isDirectory(true).readable(true).writable(true).executable(true).errorMessage(null).isBlank(false).build();
 
     when(filePathValidator.validateFilePath("directory_path")).thenReturn(directoryResult);
 
@@ -167,8 +136,7 @@ public class BabyNameMatcherMainTest {
 
     verify(filePathValidator).validateFilePath("directory_path");
     verify(exceptionHandler).handle(any(InvalidFileException.class));
-    verify(exceptionHandler).handle(argThat(e -> e.getMessage()
-        .contains("File is a directory")));
+    verify(exceptionHandler).handle(argThat(e -> e.getMessage().contains("File is a directory")));
     verifyNoInteractions(nameMatchProcessor);
   }
 
@@ -178,17 +146,7 @@ public class BabyNameMatcherMainTest {
     // Arrange
     String[] paths = {"unreadable_file.txt", "valid_file.txt"};
 
-    ValidationResult unreadableResult = ValidationResult.builder()
-        .filePath("unreadable_file.txt")
-        .valid(true)
-        .exists(true)
-        .isDirectory(false)
-        .readable(false)
-        .writable(true)
-        .executable(false)
-        .errorMessage(null)
-        .isBlank(false)
-        .build();
+    ValidationResult unreadableResult = ValidationResult.builder().filePath("unreadable_file.txt").valid(true).exists(true).isDirectory(false).readable(false).writable(true).executable(false).errorMessage(null).isBlank(false).build();
 
     when(filePathValidator.validateFilePath("unreadable_file.txt")).thenReturn(unreadableResult);
 
@@ -199,8 +157,7 @@ public class BabyNameMatcherMainTest {
 
     verify(filePathValidator).validateFilePath("unreadable_file.txt");
     verify(exceptionHandler).handle(any(FilePermissionException.class));
-    verify(exceptionHandler).handle(argThat(e -> e.getMessage()
-        .contains("Cannot read file")));
+    verify(exceptionHandler).handle(argThat(e -> e.getMessage().contains("Cannot read file")));
     verifyNoInteractions(nameMatchProcessor);
     verifyNoInteractions(consoleNamePrinter);
   }
@@ -211,17 +168,7 @@ public class BabyNameMatcherMainTest {
     // Arrange
     String[] paths = {"empty_file.txt", "valid_file.txt"};
 
-    ValidationResult emptyFileResult = ValidationResult.builder()
-        .filePath("empty_file.txt")
-        .valid(true)
-        .exists(true)
-        .isDirectory(false)
-        .readable(true)
-        .writable(true)
-        .executable(false)
-        .errorMessage(null)
-        .isBlank(true)
-        .build();
+    ValidationResult emptyFileResult = ValidationResult.builder().filePath("empty_file.txt").valid(true).exists(true).isDirectory(false).readable(true).writable(true).executable(false).errorMessage(null).isBlank(true).build();
 
     when(filePathValidator.validateFilePath("empty_file.txt")).thenReturn(emptyFileResult);
 
@@ -232,8 +179,7 @@ public class BabyNameMatcherMainTest {
 
     verify(filePathValidator).validateFilePath("empty_file.txt");
     verify(exceptionHandler).handle(any(InvalidFileException.class));
-    verify(exceptionHandler).handle(argThat(e -> e.getMessage()
-        .contains("File has no content or is blank")));
+    verify(exceptionHandler).handle(argThat(e -> e.getMessage().contains("File has no content or is blank")));
     verifyNoInteractions(nameMatchProcessor);
     verifyNoInteractions(consoleNamePrinter);
   }
@@ -246,17 +192,7 @@ public class BabyNameMatcherMainTest {
 
     ValidationResult validResult = createValidResultForFile("valid_file.txt");
 
-    ValidationResult directoryResult = ValidationResult.builder()
-        .filePath("directory_path")
-        .valid(true)
-        .exists(true)
-        .isDirectory(true)
-        .readable(true)
-        .writable(true)
-        .executable(true)
-        .errorMessage(null)
-        .isBlank(false)
-        .build();
+    ValidationResult directoryResult = ValidationResult.builder().filePath("directory_path").valid(true).exists(true).isDirectory(true).readable(true).writable(true).executable(true).errorMessage(null).isBlank(false).build();
 
     when(filePathValidator.validateFilePath("valid_file.txt")).thenReturn(validResult);
     when(filePathValidator.validateFilePath("directory_path")).thenReturn(directoryResult);
@@ -271,8 +207,7 @@ public class BabyNameMatcherMainTest {
     verify(filePathValidator).validateFilePath("directory_path");
     verify(filePathValidator, never()).validateFilePath("should_not_reach.txt");
     verify(exceptionHandler).handle(any(InvalidFileException.class));
-    verify(exceptionHandler).handle(argThat(e -> e.getMessage()
-        .contains("File is a directory")));
+    verify(exceptionHandler).handle(argThat(e -> e.getMessage().contains("File is a directory")));
     verifyNoInteractions(nameMatchProcessor);
     verifyNoInteractions(consoleNamePrinter);
   }
@@ -283,8 +218,7 @@ public class BabyNameMatcherMainTest {
     // Arrange
     String[] paths = {"path1.txt", "path2.txt"};
     when(filePathValidator.validateFilePath(anyString())).thenReturn(createValidResultForFile("anyPath"));
-    doThrow(new RuntimeException("Error during matching names"))
-        .when(nameMatchProcessor).processAndGetMatchingNames(paths);
+    doThrow(new RuntimeException("Error during matching names")).when(nameMatchProcessor).processAndGetMatchingNames(paths);
 
     // Act & Assert
     babyNameMatcherMain = createBabyNameMatcherMain(paths);
