@@ -1,8 +1,12 @@
 package com.ggoncalves.babynamematcher.core;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.SneakyThrows;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,12 +14,9 @@ import org.junit.jupiter.api.io.TempDir;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.SneakyThrows;
 
 @ExtendWith(MockitoExtension.class)
 class NameListFileReaderTest {

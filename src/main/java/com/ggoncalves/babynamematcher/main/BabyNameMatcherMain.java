@@ -1,5 +1,9 @@
 package com.ggoncalves.babynamematcher.main;
 
+import java.util.List;
+
+import javax.inject.Inject;
+
 import com.ggoncalves.babynamematcher.core.ConsoleNamePrinter;
 import com.ggoncalves.babynamematcher.core.NameMatchProcessor;
 import com.ggoncalves.babynamematcher.core.NameOption;
@@ -12,11 +16,9 @@ import com.ggoncalves.ggutils.console.exception.FilePermissionException;
 import com.ggoncalves.ggutils.console.exception.InvalidFileException;
 import com.ggoncalves.ggutils.console.validation.FilePathValidator;
 import com.ggoncalves.ggutils.console.validation.ValidationResult;
+
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
-
-import javax.inject.Inject;
-import java.util.List;
 
 @Log4j2
 public class BabyNameMatcherMain {

@@ -1,11 +1,12 @@
 package com.ggoncalves.babynamematcher.core;
 
-import com.google.common.annotations.VisibleForTesting;
-import lombok.Builder;
-
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.google.common.annotations.VisibleForTesting;
+
+import lombok.Builder;
 
 @Builder
 public class ConsoleNamePrinter {

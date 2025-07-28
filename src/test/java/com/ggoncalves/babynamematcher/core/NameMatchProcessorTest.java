@@ -1,15 +1,5 @@
 package com.ggoncalves.babynamematcher.core;
 
-import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Arrays;
-import java.util.List;
-
 import static com.ggoncalves.babynamematcher.test.fixtures.NameOptionTestDataFactory.createFromAccentuatedTwoListNameOptions;
 import static com.ggoncalves.babynamematcher.test.fixtures.NameOptionTestDataFactory.createFromOrderedNameOptionsWithBidirectionalMatching;
 import static com.ggoncalves.babynamematcher.test.fixtures.NameOptionTestDataFactory.createFromStandardThreeListNameOptions;
@@ -18,6 +8,16 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class NameMatchProcessorTest {

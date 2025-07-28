@@ -1,14 +1,15 @@
 package com.ggoncalves.babynamematcher.di;
 
+import javax.inject.Singleton;
+
 import com.ggoncalves.babynamematcher.core.ConsoleNamePrinter;
-import com.ggoncalves.babynamematcher.core.NameMatchProcessor;
 import com.ggoncalves.babynamematcher.core.NameListFileReader;
+import com.ggoncalves.babynamematcher.core.NameMatchProcessor;
 import com.ggoncalves.ggutils.console.exception.ExceptionHandler;
 import com.ggoncalves.ggutils.console.validation.FilePathValidator;
+
 import dagger.Module;
 import dagger.Provides;
-
-import javax.inject.Singleton;
 
 @Module
 public class AppModule {

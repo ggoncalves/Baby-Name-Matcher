@@ -109,9 +109,13 @@
                <version>2.40.0</version>
                <configuration>
                  <java>
-                   <eclipse>
-                     <file>eclipse_formatter.xml</file>
-                   </eclipse>
+                    <eclipse>
+                       <file>eclipse_formatter.xml</file>
+                    </eclipse>
+                    <removeUnusedImports/>
+                    <importOrder>
+                      <order>java,javax,org,com</order>
+                    </importOrder>
                   </java>
                </configuration>
             </plugin>

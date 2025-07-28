@@ -1,24 +1,5 @@
 package com.ggoncalves.babynamematcher.main;
 
-import com.ggoncalves.babynamematcher.core.ConsoleNamePrinter;
-import com.ggoncalves.babynamematcher.core.NameMatchProcessor;
-import com.ggoncalves.babynamematcher.core.NameOption;
-import com.ggoncalves.babynamematcher.exception.NotEnoughNameListsException;
-import com.ggoncalves.ggutils.console.exception.ExceptionHandler;
-import com.ggoncalves.ggutils.console.exception.FilePermissionException;
-import com.ggoncalves.ggutils.console.exception.InvalidFileException;
-import com.ggoncalves.ggutils.console.validation.FilePathValidator;
-import com.ggoncalves.ggutils.console.validation.ValidationResult;
-import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
@@ -28,6 +9,26 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
+
+import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.ggoncalves.babynamematcher.core.ConsoleNamePrinter;
+import com.ggoncalves.babynamematcher.core.NameMatchProcessor;
+import com.ggoncalves.babynamematcher.core.NameOption;
+import com.ggoncalves.babynamematcher.exception.NotEnoughNameListsException;
+import com.ggoncalves.ggutils.console.exception.ExceptionHandler;
+import com.ggoncalves.ggutils.console.exception.FilePermissionException;
+import com.ggoncalves.ggutils.console.exception.InvalidFileException;
+import com.ggoncalves.ggutils.console.validation.FilePathValidator;
+import com.ggoncalves.ggutils.console.validation.ValidationResult;
 
 @ExtendWith(MockitoExtension.class)
 public class BabyNameMatcherMainTest {

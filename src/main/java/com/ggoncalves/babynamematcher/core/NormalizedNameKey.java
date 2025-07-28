@@ -1,11 +1,12 @@
 package com.ggoncalves.babynamematcher.core;
 
-import com.google.common.annotations.VisibleForTesting;
-import lombok.Data;
-
 import java.text.Normalizer;
 import java.util.Objects;
 import java.util.regex.Pattern;
+
+import com.google.common.annotations.VisibleForTesting;
+
+import lombok.Data;
 
 @Data
 public class NormalizedNameKey {

@@ -1,11 +1,11 @@
 package com.ggoncalves.babynamematcher.test.fixtures;
 
-import com.ggoncalves.babynamematcher.core.NameOption;
-import com.ggoncalves.babynamematcher.core.NormalizedNameKey;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+
+import com.ggoncalves.babynamematcher.core.NameOption;
+import com.ggoncalves.babynamematcher.core.NormalizedNameKey;
 
 public class NameOptionTestDataFactory {
 

@@ -1,12 +1,13 @@
 package com.ggoncalves.babynamematcher.core;
 
-import lombok.Builder;
-import lombok.Data;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+
+import org.jetbrains.annotations.NotNull;
+
+import lombok.Builder;
+import lombok.Data;
 
 @Data
 @Builder

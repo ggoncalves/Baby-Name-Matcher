@@ -1,9 +1,10 @@
 package com.ggoncalves.babynamematcher.di;
 
-import com.ggoncalves.babynamematcher.main.BabyNameMatcherMain;
-import dagger.Component;
-
 import javax.inject.Singleton;
+
+import com.ggoncalves.babynamematcher.main.BabyNameMatcherMain;
+
+import dagger.Component;
 
 @Singleton
 @Component(modules = AppModule.class)

@@ -1,13 +1,13 @@
 package com.ggoncalves.babynamematcher.test.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TestAppender extends AbstractAppender {
   private final List<String> messages = new ArrayList<>();

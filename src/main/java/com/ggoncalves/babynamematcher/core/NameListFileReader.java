@@ -1,14 +1,15 @@
 package com.ggoncalves.babynamematcher.core;
 
-import com.google.common.annotations.VisibleForTesting;
-import lombok.Builder;
-import lombok.SneakyThrows;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.common.annotations.VisibleForTesting;
+
+import lombok.Builder;
+import lombok.SneakyThrows;
 
 @Builder
 public class NameListFileReader {
